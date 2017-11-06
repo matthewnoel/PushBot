@@ -1,5 +1,5 @@
 /*
-Copyright 2017 
+Copyright 2017
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -56,17 +56,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @TeleOp
 
 public class AutoRedPerp extends LinearOpMode {
-    private DcMotor left_drive;
-    private DcMotor right_drive;
-    private DcMotor arm_lift;
-    private ColorSensor color_prox;
-    private Servo right_thumb;
-    private Servo left_thumb;
-    private Servo ball_arm;
-    
-    private String glyphPosition;
-    
-//START VUFORIA CODE 
+    private static DcMotor left_drive;
+    private static DcMotor right_drive;
+    private static DcMotor arm_lift;
+    private static ColorSensor color_prox;
+    private static Servo right_thumb;
+    private static Servo left_thumb;
+    private static Servo ball_arm;
+
+    private static String glyphPosition;
+
+//START VUFORIA CODE
     public static final String TAG = "Vuforia VuMark Sample";
 
     OpenGLMatrix lastLocation = null;
@@ -76,12 +76,12 @@ public class AutoRedPerp extends LinearOpMode {
      * localization engine.
      */
     VuforiaLocalizer vuforia;
-//END VUFORIA CODE 
+//END VUFORIA CODE
 
     @Override
     public void runOpMode() {
-        
-//START VUFORIA CODE 
+
+//START VUFORIA CODE
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
@@ -129,8 +129,8 @@ public class AutoRedPerp extends LinearOpMode {
         waitForStart();
 
         relicTrackables.activate();
-//END VUFORIA CODE 
-        
+//END VUFORIA CODE
+
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         arm_lift = hardwareMap.get(DcMotor.class, "arm_lift");
@@ -143,20 +143,20 @@ public class AutoRedPerp extends LinearOpMode {
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        
+
         // sets the color arm to the proper position and calls the knock off ball method
         ball_arm.setPosition(0);
         knockOffBlue();
-        
+
         // move to safe zone
         moveToSafe();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            
 
-            
-//START VUFORIA CODE 
+
+
+//START VUFORIA CODE
             /**
              * See if any of the instances of {@link relicTemplate} are currently visible.
              * {@link RelicRecoveryVuMark} is an enum which can have the following values:
@@ -204,46 +204,47 @@ public class AutoRedPerp extends LinearOpMode {
             else {
                 telemetry.addData("VuMark", "not visible");
             }
-//END VUFORIA CODE 
-            
+//END VUFORIA CODE
+
             telemetry.addData("Status", "Running");
             telemetry.update();
         }
     }
-    
-//START VUFORIA CODE 
+
+//START VUFORIA CODE
     String format(OpenGLMatrix transformationMatrix) {
         return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
-//END VUFORIA CODE 
-    
-    // brings down arm, knocks of blue ball, brings arm up
-    private void knockOffBlue(){
-        // drops arm down
-        if(ball_arm.getPosition() < 0.74){
-            ball_arm.setPosition(ball_arm.getPosition()+0.01);
-        } else {
+//END VUFORIA CODE
+
+        // brings down arm, knocks of blue ball, brings arm up
+        private void knockOffBlue(){
+            // drops arm down
+            while(ball_arm.getPosition() < 0.74){
+                    ball_arm.setPosition(ball_arm.getPosition()+0.001);
+            }
+
             // checks the color
             if(color_prox.blue() > color_prox.red()){
-                //rotate right and knock off blue
-                
+            //rotate left and knock off blue
+
             } else {
-                //rotate left and knock off blue
-                
+            //rotate right and knock off blue
+
             }
+
+            // brings arm back up
+            ball_arm.setPosition(0);
         }
-        // brings arm back up
-        ball_arm.setPosition(0);
-    }
-    
+
     // moves to safe zone for red team perpendicular layout
-    private void moveToSafe(){
+    public static void moveToSafe(){
         //rotate left
-        
+
         //move forward
-        
+
         //rotate left
-        
+
         //move forward
     }
 }
