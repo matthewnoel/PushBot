@@ -247,4 +247,29 @@ public class AutoBluPerp extends LinearOpMode {
 
         //move forward
     }
+
+    public static void dropCube(){
+            //Rotate right
+
+            //move forward
+
+            //rotate right
+
+            //Move forward a certain amount
+            if(glyphPosition.equals("LEFT")){
+
+            } else if(glyphPosition.equals("CENTER")){
+
+            } else {
+
+            }
+
+            //Rotate left
+
+
+            //Move forward
+
+
+            //Drop cube
+    }
 }

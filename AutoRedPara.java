@@ -139,6 +139,13 @@ public class AutoRedPara extends LinearOpMode {
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
 
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setDirection(DcMotor.Direction.REVERSE);
+        right_drive.setDirection(DcMotor.Direction.REVERSE);
+        left_drive.setDirection(DcMotor.Direction.REVERSE);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
@@ -246,5 +253,26 @@ public class AutoRedPara extends LinearOpMode {
         //rotate right
 
         //move forward
+    }
+
+    public static void dropCube(){
+            //Rotate left
+
+            //Move forward a certain amount
+            if(glyphPosition.equals("LEFT")){
+
+            } else if(glyphPosition.equals("CENTER")){
+
+            } else {
+
+            }
+
+            //Rotate right
+
+
+            //Move forward
+
+
+            //Drop cube
     }
 }
