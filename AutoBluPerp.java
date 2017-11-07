@@ -225,10 +225,10 @@ public class AutoBluPerp extends LinearOpMode {
 
     // brings down arm, knocks of blue ball, brings arm up
     private void knockOffRed(){
-        // drops arm down
-        if(ball_arm.getPosition() < 0.74){
-            ball_arm.setPosition(ball_arm.getPosition()+0.01);
-        } else {
+            // drops arm down
+            while(ball_arm.getPosition() < 0.74){
+                ball_arm.setPosition(ball_arm.getPosition()+0.001);
+            }
             // checks the color
             if(color_prox.red() > color_prox.blue()){
                 //rotate left and knock off red

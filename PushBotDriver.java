@@ -1,5 +1,5 @@
 /*
-Copyright 2017 
+Copyright 2017
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -63,30 +63,32 @@ public class PushBotDriver extends LinearOpMode {
         //color_distance = hardwareMap.get(ColorSensor.class, "color_distance");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
-        
+
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm_lift.setDirection(DcMotor.Direction.REVERSE);
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         left_drive.setDirection(DcMotor.Direction.REVERSE);
-        
-        
+
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             if(this.gamepad1.b){
-                bIsPressed = !bIsPressed;
-            }
+                bIsPressed = true;
+        } else {
+                bIsPressed = false;
+        }
             //Thumb code
             if(bIsPressed){
                 //Dependant thumbs
-                
+
                 //Thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
@@ -99,7 +101,7 @@ public class PushBotDriver extends LinearOpMode {
                 }
             } else {
                 //Independant thumbs
-                
+
                 //Left thumb code
                 if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
@@ -108,7 +110,7 @@ public class PushBotDriver extends LinearOpMode {
                 } else if (this.gamepad1.left_bumper){
                     left_thumb.setPosition(left_thumb.getPosition() + 0.005);
                 }
-                
+
                 //Right thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
@@ -118,7 +120,7 @@ public class PushBotDriver extends LinearOpMode {
                     right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                 }
             }
-            
+
             //Motor test code
             arm_lift.setPower(this.gamepad1.right_stick_y);
             left_drive.setPower(this.gamepad1.left_stick_y - this.gamepad1.left_stick_x);
