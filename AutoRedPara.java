@@ -66,6 +66,8 @@ public class AutoRedPara extends LinearOpMode {
 
     private static String glyphPosition;
 
+
+
 //START VUFORIA CODE
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -80,6 +82,8 @@ public class AutoRedPara extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+
 
 //START VUFORIA CODE
         /*
@@ -138,6 +142,16 @@ public class AutoRedPara extends LinearOpMode {
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
+
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setDirection(DcMotor.Direction.REVERSE);
+        right_drive.setDirection(DcMotor.Direction.REVERSE);
+
+        //left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        //right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        //left_drive.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -207,6 +221,8 @@ public class AutoRedPara extends LinearOpMode {
 //END VUFORIA CODE
 
             telemetry.addData("Status", "Running");
+            telemetry.addData("right encoder",right_drive.getCurrentPosition());
+            telemetry.addData("left encoder",left_drive.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -227,10 +243,19 @@ public class AutoRedPara extends LinearOpMode {
         // checks the color
         if(color_prox.blue() > color_prox.red()){
         //rotate left and knock off blue
+                int encStart = right_drive.getCurrentPosition();
+                while(right_drive.getCurrentPosition() < encStart + 500){
+                        right_drive.setPower(0.5);
+                }
+                right_drive.setPower(0);
 
         } else {
         //rotate right and knock off blue
-
+                int encStart = left_drive.getCurrentPosition();
+                while(left_drive.getCurrentPosition() < encStart + 500){
+                        left_drive.setPower(0.5);
+                }
+                left_drive.setPower(0);
         }
 
         // brings arm back up
@@ -246,5 +271,26 @@ public class AutoRedPara extends LinearOpMode {
         //rotate right
 
         //move forward
+    }
+
+    public static void dropCube(){
+            //Rotate left
+
+            //Move forward a certain amount
+            if(glyphPosition.equals("LEFT")){
+
+            } else if(glyphPosition.equals("CENTER")){
+
+            } else {
+
+            }
+
+            //Rotate right
+
+
+            //Move forward
+
+
+            //Drop cube
     }
 }

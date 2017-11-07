@@ -64,7 +64,7 @@ public class AutoRedPerp extends LinearOpMode {
     private static Servo left_thumb;
     private static Servo ball_arm;
 
-    private static String glyphPosition;
+    private String glyphPosition;
 
 //START VUFORIA CODE
     public static final String TAG = "Vuforia VuMark Sample";
@@ -138,6 +138,12 @@ public class AutoRedPerp extends LinearOpMode {
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
+
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm_lift.setDirection(DcMotor.Direction.REVERSE);
+        right_drive.setDirection(DcMotor.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -217,28 +223,38 @@ public class AutoRedPerp extends LinearOpMode {
     }
 //END VUFORIA CODE
 
-        // brings down arm, knocks of blue ball, brings arm up
-        private void knockOffBlue(){
-            // drops arm down
-            while(ball_arm.getPosition() < 0.74){
-                    ball_arm.setPosition(ball_arm.getPosition()+0.001);
-            }
+    // brings down arm, knocks of blue ball, brings arm up
+    public static void knockOffBlue(){
+        // drops arm down
+        while(ball_arm.getPosition() < 0.74){
+            ball_arm.setPosition(ball_arm.getPosition() + 0.001);
 
-            // checks the color
-            if(color_prox.blue() > color_prox.red()){
-            //rotate left and knock off blue
-
-            } else {
-            //rotate right and knock off blue
-
-            }
-
-            // brings arm back up
-            ball_arm.setPosition(0);
         }
 
+        // checks the color
+        if(color_prox.blue() > color_prox.red()){
+        //rotate left and knock off blue
+                int encStart = right_drive.getCurrentPosition();
+                while(right_drive.getCurrentPosition() < encStart + 500){
+                        right_drive.setPower(0.5);
+                }
+                right_drive.setPower(0);
+
+        } else {
+        //rotate right and knock off blue
+                int encStart = left_drive.getCurrentPosition();
+                while(left_drive.getCurrentPosition() < encStart + 500){
+                        left_drive.setPower(0.5);
+                }
+                left_drive.setPower(0);
+        }
+
+        // brings arm back up
+        ball_arm.setPosition(0);
+    }
+
     // moves to safe zone for red team perpendicular layout
-    public static void moveToSafe(){
+    private void moveToSafe(){
         //rotate left
 
         //move forward
