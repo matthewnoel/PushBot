@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
-@TeleOp
+@Autonomous
 
 public class AutoRedPara extends LinearOpMode {
     private static DcMotor left_drive;
@@ -248,7 +248,7 @@ public class AutoRedPara extends LinearOpMode {
                         right_drive.setPower(0.5);
                 }
                 right_drive.setPower(0);
-                while(right_drive.getCurrentPosition() > encStart){
+                while(right_drive.getCurrentPosition() > encStart - 300){
                     right_drive.setPower(-0.5);
                 }
                 right_drive.setPower(0);
@@ -271,9 +271,24 @@ public class AutoRedPara extends LinearOpMode {
 
     // moves to safe zone for red team perpendicular layout
     public static void moveToSafe(){
+        int encStartTwo = right_drive.getCurrentPosition();
         //rotate left
+            while(right_drive.getCurrentPosition() < encStartTwo + 4000){
+                right_drive.setPower(0.5);
+                left_drive.setPower(-0.25);
+
+            }
+            right_drive.setPower(0);
+            left_drive.setPower(0);
 
         //move forward
+        encStartTwo = left_drive.getCurrentPosition();
+        while(left_drive.getCurrentPosition() < encStartTwo + 5000){
+            left_drive.setPower(0.5);
+            right_drive.setPower(0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
 
         //rotate right
 
@@ -300,4 +315,5 @@ public class AutoRedPara extends LinearOpMode {
 
             //Drop cube
     }
+
 }

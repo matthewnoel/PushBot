@@ -51,8 +51,7 @@ public class PushBotDriver extends LinearOpMode {
     private ColorSensor color_distance;
     private Servo right_thumb;
     private Servo left_thumb;
-    private boolean bIsPressed = false;
-
+    private boolean bIsPressed = true;
 
     @Override
     public void runOpMode() {
@@ -80,11 +79,12 @@ public class PushBotDriver extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if(this.gamepad1.b){
-                bIsPressed = true;
-        } else {
+            if(this.gamepad2.b){
                 bIsPressed = false;
-        }
+            } else {
+                bIsPressed = true;
+            }
+
             //Thumb code
             if(bIsPressed){
                 //Dependant thumbs
@@ -122,7 +122,7 @@ public class PushBotDriver extends LinearOpMode {
             }
 
             //Motor test code
-            arm_lift.setPower(this.gamepad1.right_stick_y);
+            arm_lift.setPower(this.gamepad1.right_stick_y / 1.5);
             left_drive.setPower(this.gamepad1.left_stick_y - this.gamepad1.left_stick_x);
             right_drive.setPower(-(this.gamepad1.left_stick_y + this.gamepad1.left_stick_x));
             /*
@@ -134,6 +134,8 @@ public class PushBotDriver extends LinearOpMode {
             telemetry.addData("Alpha", color_distance.alpha());
             telemetry.update();
             */
+            telemetry.addData("bool",bIsPressed);
+            telemetry.update();
         }
     }
 }

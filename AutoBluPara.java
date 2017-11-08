@@ -53,7 +53,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
  * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
  */
-@TeleOp
+@Autonomous
 
 public class AutoBluPara extends LinearOpMode {
     private DcMotor left_drive;
@@ -229,31 +229,31 @@ public class AutoBluPara extends LinearOpMode {
         while(ball_arm.getPosition() < 0.74){
             ball_arm.setPosition(ball_arm.getPosition()+0.001);
         }
-            // checks the color
-            if(color_prox.red() > color_prox.blue()){
-                //rotate left and knock off red
-                int encStart = right_drive.getCurrentPosition();
-                while(right_drive.getCurrentPosition() < encStart + 700){
-                        right_drive.setPower(0.5);
-                }
-                right_drive.setPower(0);
-                while(right_drive.getCurrentPosition() > encStart){
-                    right_drive.setPower(-0.5);
-                }
-                right_drive.setPower(0);
 
-            } else {
-                //rotate right and knock off red
-                int encStart = left_drive.getCurrentPosition();
-                while(left_drive.getCurrentPosition() < encStart + 700){
-                    left_drive.setPower(0.5);
-                }
-                left_drive.setPower(0);
-                while(left_drive.getCurrentPosition() > encStart){
-                    left_drive.setPower(-0.5);
-                }
-                left_drive.setPower(0);
+        // checks the color
+        if(color_prox.red() > color_prox.blue()){
+            //rotate left and knock off red
+            int encStart = right_drive.getCurrentPosition();
+            while(right_drive.getCurrentPosition() < encStart + 700){
+                    right_drive.setPower(0.5);
             }
+            right_drive.setPower(0);
+            while(right_drive.getCurrentPosition() > encStart){
+                right_drive.setPower(-0.5);
+            }
+            right_drive.setPower(0);
+
+        } else {
+            //rotate right and knock off red
+            int encStart = left_drive.getCurrentPosition();
+            while(left_drive.getCurrentPosition() < encStart + 700){
+                left_drive.setPower(0.5);
+            }
+            left_drive.setPower(0);
+            while(left_drive.getCurrentPosition() > encStart){
+                left_drive.setPower(-0.5);
+            }
+            left_drive.setPower(0);
         }
         // brings arm back up
         ball_arm.setPosition(0);
@@ -261,10 +261,23 @@ public class AutoBluPara extends LinearOpMode {
 
     // moves to safe zone for red team perpendicular layout
     private void moveToSafe(){
+        int encStartTwo = left_drive.getCurrentPosition();
         //rotate right
+            while(left_drive.getCurrentPosition() < encStartTwo + 3500){
+                left_drive.setPower(0.5);
+                right_drive.setPower(-0.25);
 
+            }
+            right_drive.setPower(0);
+            left_drive.setPower(0);
         //move forward
-
+        encStartTwo = left_drive.getCurrentPosition();
+        while(left_drive.getCurrentPosition() < encStartTwo + 5000){
+            left_drive.setPower(0.5);
+            right_drive.setPower(0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
         //rotate left
 
         //move forward
