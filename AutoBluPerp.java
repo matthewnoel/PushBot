@@ -233,15 +233,24 @@ public class AutoBluPerp extends LinearOpMode {
             if(color_prox.red() > color_prox.blue()){
                 //rotate left and knock off red
                 int encStart = right_drive.getCurrentPosition();
-                while(right_drive.getCurrentPosition() < encStart + 500){
+                while(right_drive.getCurrentPosition() < encStart + 700){
                         right_drive.setPower(0.5);
                 }
                 right_drive.setPower(0);
+                while(right_drive.getCurrentPosition() > encStart){
+                    right_drive.setPower(-0.5);
+                }
+                right_drive.setPower(0);
+
             } else {
                 //rotate right and knock off red
                 int encStart = left_drive.getCurrentPosition();
-                while(left_drive.getCurrentPosition() < encStart + 500){
-                        left_drive.setPower(0.5);
+                while(left_drive.getCurrentPosition() < encStart + 700){
+                    left_drive.setPower(0.5);
+                }
+                left_drive.setPower(0);
+                while(left_drive.getCurrentPosition() > encStart){
+                    left_drive.setPower(-0.5);
                 }
                 left_drive.setPower(0);
             }

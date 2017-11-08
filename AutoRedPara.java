@@ -244,16 +244,23 @@ public class AutoRedPara extends LinearOpMode {
         if(color_prox.blue() > color_prox.red()){
         //rotate left and knock off blue
                 int encStart = right_drive.getCurrentPosition();
-                while(right_drive.getCurrentPosition() < encStart + 500){
+                while(right_drive.getCurrentPosition() < encStart + 700){
                         right_drive.setPower(0.5);
                 }
                 right_drive.setPower(0);
-
+                while(right_drive.getCurrentPosition() > encStart){
+                    right_drive.setPower(-0.5);
+                }
+                right_drive.setPower(0);
         } else {
         //rotate right and knock off blue
                 int encStart = left_drive.getCurrentPosition();
-                while(left_drive.getCurrentPosition() < encStart + 500){
+                while(left_drive.getCurrentPosition() < encStart + 700){
                         left_drive.setPower(0.5);
+                }
+                left_drive.setPower(0);
+                while(left_drive.getCurrentPosition() > encStart){
+                    left_drive.setPower(-0.5);
                 }
                 left_drive.setPower(0);
         }
