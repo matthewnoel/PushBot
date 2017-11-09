@@ -51,6 +51,7 @@ public class PushBotDriver extends LinearOpMode {
     private ColorSensor color_distance;
     private Servo right_thumb;
     private Servo left_thumb;
+    private Servo ball_arm;
     private boolean bIsPressed = true;
 
     @Override
@@ -62,6 +63,7 @@ public class PushBotDriver extends LinearOpMode {
         //color_distance = hardwareMap.get(ColorSensor.class, "color_distance");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
+        ball_arm = hardwareMap.get(Servo.class, "ball_arm");
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -73,6 +75,7 @@ public class PushBotDriver extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        ball_arm.setPosition(0);
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
