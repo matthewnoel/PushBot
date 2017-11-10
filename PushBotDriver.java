@@ -93,12 +93,12 @@ public class PushBotDriver extends LinearOpMode {
                 //Dependant thumbs
 
                 //Thumb code
-                if(!this.gamepad1.right_bumper){
+                //if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
                         right_thumb.setPosition(right_thumb.getPosition() + 0.005);
                         left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
-                } else if (this.gamepad1.right_bumper){
+                /*} else */ if (this.gamepad1.right_bumper){
                     right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                     left_thumb.setPosition(left_thumb.getPosition() + 0.005);
                 }
@@ -106,20 +106,20 @@ public class PushBotDriver extends LinearOpMode {
                 //Independant thumbs
 
                 //Left thumb code
-                if(!this.gamepad1.left_bumper){
+                //if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
                         left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
-                } else if (this.gamepad1.left_bumper){
+                //} else if (this.gamepad1.left_bumper){
                     left_thumb.setPosition(left_thumb.getPosition() + 0.005);
-                }
+                //}
 
                 //Right thumb code
-                if(!this.gamepad1.right_bumper){
+                //if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
                         right_thumb.setPosition(right_thumb.getPosition() + 0.005);
                     }
-                } else if (this.gamepad1.right_bumper){
+                /*} else */ if (this.gamepad1.right_bumper){
                     right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                 }
             }

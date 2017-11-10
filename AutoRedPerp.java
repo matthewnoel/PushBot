@@ -236,22 +236,26 @@ public class AutoRedPerp extends LinearOpMode {
         //rotate left and knock off blue
                 int encStart = right_drive.getCurrentPosition();
                 while(right_drive.getCurrentPosition() < encStart + 700){
-                        right_drive.setPower(0.5);
+                        right_drive.setPower(0.125);
                 }
+            // brings arm back up
+            ball_arm.setPosition(0);
                 right_drive.setPower(0);
                 while(right_drive.getCurrentPosition() > encStart){
-                    right_drive.setPower(-0.5);
+                    right_drive.setPower(-0.125);
                 }
                 right_drive.setPower(0);
         } else {
         //rotate right and knock off blue
                 int encStart = left_drive.getCurrentPosition();
                 while(left_drive.getCurrentPosition() < encStart + 700){
-                        left_drive.setPower(0.5);
+                        left_drive.setPower(0.125);
                 }
+            // brings arm back up
+            ball_arm.setPosition(0);
                 left_drive.setPower(0);
                 while(left_drive.getCurrentPosition() > encStart){
-                    left_drive.setPower(-0.5);
+                    left_drive.setPower(-0.125);
                 }
                 left_drive.setPower(0);
         }
@@ -262,11 +266,24 @@ public class AutoRedPerp extends LinearOpMode {
 
     // moves to safe zone for red team perpendicular layout
     private void moveToSafe(){
-        //rotate left
+        int encStartTwo = left_drive.getCurrentPosition();
+        //rotate right
+            while(left_drive.getCurrentPosition() < encStartTwo + 4000){
+                left_drive.setPower(-0.125);
+                right_drive.setPower(0.0625);
 
+            }
+            right_drive.setPower(0);
+            left_drive.setPower(0);
         //move forward
-
-        //rotate left
+        encStartTwo = left_drive.getCurrentPosition();
+        while(left_drive.getCurrentPosition() < encStartTwo + 5000){
+            left_drive.setPower(0.5);
+            right_drive.setPower(0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
+        //rotate right
 
         //move forward
     }
