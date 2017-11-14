@@ -267,9 +267,9 @@ public class AutoBluPara extends LinearOpMode {
     private void moveToSafe(){
         int encStartTwo = left_drive.getCurrentPosition();
         //rotate right
-            while(left_drive.getCurrentPosition() < encStartTwo + 3500){
+            while(left_drive.getCurrentPosition() < encStartTwo + 2000){
                 left_drive.setPower(0.125);
-                right_drive.setPower(-0.0625);
+                right_drive.setPower(-0.125);
 
             }
             right_drive.setPower(0);

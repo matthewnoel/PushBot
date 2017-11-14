@@ -279,9 +279,9 @@ public class AutoRedPara extends LinearOpMode {
     public static void moveToSafe(){
         int encStartTwo = right_drive.getCurrentPosition();
         //rotate left
-            while(right_drive.getCurrentPosition() < encStartTwo + 4000){
+            while(right_drive.getCurrentPosition() < encStartTwo + 2000){
+                left_drive.setPower(-0.125);
                 right_drive.setPower(0.125);
-                left_drive.setPower(-0.0625);
 
             }
             right_drive.setPower(0);

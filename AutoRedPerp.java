@@ -266,14 +266,17 @@ public class AutoRedPerp extends LinearOpMode {
 
     // moves to safe zone for red team perpendicular layout
     private void moveToSafe(){
-        int encStartTwo = left_drive.getCurrentPosition();
-        //rotate right
-            while(left_drive.getCurrentPosition() < encStartTwo + 4000){
+        int encStartTwo = right_drive.getCurrentPosition();
+        //rotate left
+            while(right_drive.getCurrentPosition() < encStartTwo + 4000){
                 left_drive.setPower(-0.125);
-                right_drive.setPower(0.0625);
-
+                right_drive.setPower(0.125);
+                telemetry.addData("Right encder", right_drive.getCurrentPosition());
+                telemetry.update();
             }
             right_drive.setPower(0);
+
+
             left_drive.setPower(0);
         //move forward
         encStartTwo = left_drive.getCurrentPosition();

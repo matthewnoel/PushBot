@@ -271,7 +271,7 @@ public class AutoBluPerp extends LinearOpMode {
         //rotate right
             while(left_drive.getCurrentPosition() < encStartTwo + 4000){
                 left_drive.setPower(0.125);
-                right_drive.setPower(-0.0625);
+                right_drive.setPower(-0.125);
 
             }
             right_drive.setPower(0);

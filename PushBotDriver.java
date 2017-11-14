@@ -10,7 +10,8 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial
 portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+THE SOFTWARE IS PROVIDED "AS
+IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
 NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
@@ -93,12 +94,12 @@ public class PushBotDriver extends LinearOpMode {
                 //Dependant thumbs
 
                 //Thumb code
-                //if(!this.gamepad1.right_bumper){
+                if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
                         right_thumb.setPosition(right_thumb.getPosition() + 0.005);
                         left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
-                /*} else */ if (this.gamepad1.right_bumper){
+                } else if (this.gamepad1.right_bumper){
                     right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                     left_thumb.setPosition(left_thumb.getPosition() + 0.005);
                 }
@@ -106,20 +107,20 @@ public class PushBotDriver extends LinearOpMode {
                 //Independant thumbs
 
                 //Left thumb code
-                //if(!this.gamepad1.left_bumper){
+                if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
                         left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
-                //} else if (this.gamepad1.left_bumper){
+                } else if (this.gamepad1.left_bumper){
                     left_thumb.setPosition(left_thumb.getPosition() + 0.005);
-                //}
+                }
 
                 //Right thumb code
-                //if(!this.gamepad1.right_bumper){
+                if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
                         right_thumb.setPosition(right_thumb.getPosition() + 0.005);
                     }
-                /*} else */ if (this.gamepad1.right_bumper){
+                } else if (this.gamepad1.right_bumper){
                     right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                 }
             }
@@ -138,6 +139,7 @@ public class PushBotDriver extends LinearOpMode {
             telemetry.update();
             */
             telemetry.addData("bool",bIsPressed);
+            telemetry.addData("arm position", arm_lift.getCurrentPosition());
             telemetry.update();
         }
     }
