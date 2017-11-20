@@ -30,6 +30,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import java.util.Locale;
+
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -44,7 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 @TeleOp
 
-public class PushBotDriver extends LinearOpMode {
+public class PushBotDriverTEST extends LinearOpMode {
     private DcMotor arm_lift;
     private DcMotor right_drive;
     private DcMotor left_drive;
@@ -54,6 +72,8 @@ public class PushBotDriver extends LinearOpMode {
     private Servo left_thumb;
     private Servo ball_arm;
     private boolean bIsPressed = true;
+
+    BNO055IMU imu;
 
     @Override
     public void runOpMode() {
@@ -72,7 +92,21 @@ public class PushBotDriver extends LinearOpMode {
         arm_lift.setDirection(DcMotor.Direction.REVERSE);
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         left_drive.setDirection(DcMotor.Direction.REVERSE);
+//START IMU STUFF
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+//END IMU STUFF
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -138,6 +172,8 @@ public class PushBotDriver extends LinearOpMode {
             telemetry.addData("Alpha", color_distance.alpha());
             telemetry.update();
             */
+
+            telemetry.addData("heading", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.addData("bool",bIsPressed);
             telemetry.addData("arm position", arm_lift.getCurrentPosition());
             telemetry.addData("left thumb", left_thumb.getPosition());
