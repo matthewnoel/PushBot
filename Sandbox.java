@@ -13,6 +13,7 @@ public class Sandbox {
 
     public void rotateRight(DcMotor left, DcMotor right, BNO055IMU imu, double degrees){
     //Left is Positive Right is Negative
+    //Counterclock is Positve Clock is Negative
     left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     right.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         while(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle > -degrees){

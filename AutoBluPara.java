@@ -152,6 +152,8 @@ public class AutoBluPara extends LinearOpMode {
 
         // sets the color arm to the proper position and calls the knock off ball method
         ball_arm.setPosition(0);
+        //ball_arm.setPosition(0.5);
+
         knockOffRed();
 
         // move to safe zone
@@ -266,7 +268,7 @@ public class AutoBluPara extends LinearOpMode {
     // moves to safe zone for blue team paralell layout
     private void moveToSafe(){
         int encStartTwo = left_drive.getCurrentPosition();
-        //rotate right
+        //rotate left
             while(left_drive.getCurrentPosition() < encStartTwo + 2000){
                 left_drive.setPower(0.125);
                 right_drive.setPower(-0.125);

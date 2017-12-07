@@ -61,7 +61,7 @@ public class PushBotDriver extends LinearOpMode {
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         //touch_senser = hardwareMap.get(DigitalChannel.class, "touch_senser");
-        //color_distance = hardwareMap.get(ColorSensor.class, "color_distance");
+        color_distance = hardwareMap.get(ColorSensor.class, "color_prox");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
@@ -96,12 +96,12 @@ public class PushBotDriver extends LinearOpMode {
                 //Thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.005);
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.005);
+                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
+                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.005);
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.005);
+                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
+                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
                 }
             } else {
                 //Independant thumbs
@@ -109,19 +109,19 @@ public class PushBotDriver extends LinearOpMode {
                 //Left thumb code
                 if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.005);
+                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
                     }
                 } else if (this.gamepad1.left_bumper){
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.005);
+                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
                 }
 
                 //Right thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.005);
+                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.005);
+                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
                 }
             }
 
@@ -131,10 +131,10 @@ public class PushBotDriver extends LinearOpMode {
             right_drive.setPower(-(this.gamepad1.left_stick_y + this.gamepad1.left_stick_x));
             /*
             telemetry.addData("Status", "Running");
-            telemetry.addData("Boom Button Pressed", !touch_senser.getState());
+            //telemetry.addData("Boom Button Pressed", !touch_senser.getState());
             telemetry.addData("Red", color_distance.red());
-            telemetry.addData("Green", color_distance.green());
-            telemetry.addData("Blue", color_distance.blue());
+            //telemetry.addData("Green", color_distance.green());
+            //telemetry.addData("Blue", color_distance.blue());
             telemetry.addData("Alpha", color_distance.alpha());
             telemetry.update();
             */
@@ -142,6 +142,7 @@ public class PushBotDriver extends LinearOpMode {
             telemetry.addData("arm position", arm_lift.getCurrentPosition());
             telemetry.addData("left thumb", left_thumb.getPosition());
             telemetry.addData("right thumb", right_thumb.getPosition());
+            telemetry.addData("Blue" , color_distance.blue());
             telemetry.update();
         }
     }
