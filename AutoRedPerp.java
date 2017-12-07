@@ -21,14 +21,6 @@ package org.firstinspires.ftc.loaderbot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -38,14 +30,20 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -54,26 +52,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-
 import java.util.Locale;
 
-
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
- * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
- */
 @Autonomous
 
 public class AutoRedPerp extends LinearOpMode {
+
     private static DcMotor left_drive;
     private static DcMotor right_drive;
     private static DcMotor arm_lift;
@@ -82,9 +66,7 @@ public class AutoRedPerp extends LinearOpMode {
     private static Servo left_thumb;
     private static Servo ball_arm;
     private GyroSensor mr_gyro;
-
     private String glyphPosition;
-
     static BNO055IMU imu;
 
 //START VUFORIA CODE
@@ -99,10 +81,10 @@ public class AutoRedPerp extends LinearOpMode {
     VuforiaLocalizer vuforia;
 //END VUFORIA CODE
 
-
-
     @Override
+
     public void runOpMode() {
+
 //START IMU STUFF
         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
         params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -186,21 +168,15 @@ public class AutoRedPerp extends LinearOpMode {
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
 
-        // sets the color arm to the proper position and calls the knock off ball method
         ball_arm.setPosition(0);
         pickUpGlyph();
         knockOffBlue();
-
-        // move to safe zone
         moveToSafe();
 
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-
 
 //START VUFORIA CODE
             /**
@@ -253,7 +229,6 @@ public class AutoRedPerp extends LinearOpMode {
 //END VUFORIA CODE
 
             telemetry.addData("Status", "Running");
-            telemetry.addData("Heading",mr_gyro.getHeading());
             telemetry.update();
         }
     }
@@ -274,9 +249,6 @@ public class AutoRedPerp extends LinearOpMode {
         // checks the color
         if(color_prox.blue() > color_prox.red()){
         //rotate left and knock off blue
-        //DO THE ABSOLUTE VALUE IN THE WHILE STATEMNET TO AVOID WEIRD INEQUALITY ERRORS
-                int encStart = right_drive.getCurrentPosition();
-                //while(right_drive.getCurrentPosition() < encStart + 700){
                 while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                     right_drive.setPower(0.125);
                     left_drive.setPower(-0.125);
@@ -285,7 +257,7 @@ public class AutoRedPerp extends LinearOpMode {
             ball_arm.setPosition(0);
                 right_drive.setPower(0);
                 left_drive.setPower(0);
-                //while(right_drive.getCurrentPosition() > encStart){
+
                 while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                     right_drive.setPower(-0.125);
                     left_drive.setPower(0.125);
@@ -296,7 +268,7 @@ public class AutoRedPerp extends LinearOpMode {
         } else {
         //rotate right and knock off blue
                 int encStart = left_drive.getCurrentPosition();
-                //while(left_drive.getCurrentPosition() < encStart + 700){
+
                 while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                         left_drive.setPower(0.125);
                         right_drive.setPower(-0.125);
@@ -305,7 +277,7 @@ public class AutoRedPerp extends LinearOpMode {
             ball_arm.setPosition(0);
                 left_drive.setPower(0);
                 right_drive.setPower(0);
-                //while(left_drive.getCurrentPosition() > encStart){
+
                 while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                     left_drive.setPower(-0.125);
                     right_drive.setPower(0.125);
@@ -318,45 +290,35 @@ public class AutoRedPerp extends LinearOpMode {
         ball_arm.setPosition(0);
     }
 
-    // moves to safe zone for red team perpendicular layout
     private void moveToSafe(){
-        int encStartTwo = left_drive.getCurrentPosition();
-        //Rotate
-            //while(left_drive.getCurrentPosition() < encStartTwo + 4000){
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
-                right_drive.setPower(-0.125);
-                left_drive.setPower(0.125);
-                telemetry.addData("Left encoder", left_drive.getCurrentPosition());
-                telemetry.update();
-            }
-            right_drive.setPower(0);
+      //rotate
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
+            right_drive.setPower(-0.125);
+            left_drive.setPower(0.125);
+        }
+        right_drive.setPower(0);
+        left_drive.setPower(0);
 
-
-            left_drive.setPower(0);
         //move forward
-        encStartTwo = left_drive.getCurrentPosition();
+        int encStartTwo = left_drive.getCurrentPosition();
         while(left_drive.getCurrentPosition() < encStartTwo + 5000){
             left_drive.setPower(0.5);
             right_drive.setPower(0.5);
         }
         left_drive.setPower(0);
         right_drive.setPower(0);
-        //rotate right
-
-        //move forward
     }
 
-    private void pickUpGlyph(){
-        while(mr_gyro.getHeading() < 2){
-            arm_lift.setPower(-0.125);
-        }
-        arm_lift.setPower(0);
-        left_thumb.setPosition(0.5);
-        right_thumb.setPosition(0.5);
-        while(mr_gyro.getHeading() < 30){
-            arm_lift.setPower(-0.25);
-        }
-        arm_lift.setPower(0);
-
+  private void pickUpGlyph(){
+    while(mr_gyro.getHeading() < 2){
+      arm_lift.setPower(-0.125);
     }
+    arm_lift.setPower(0);
+    left_thumb.setPosition(0.5);
+    right_thumb.setPosition(0.5);
+    while(mr_gyro.getHeading() < 30){
+      arm_lift.setPower(-0.25);
+    }
+    arm_lift.setPower(0);
+  }
 }

@@ -19,54 +19,55 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.loaderbot;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import java.util.Locale;
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
- * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
- */
 @Autonomous
 
 public class AutoRedPara extends LinearOpMode {
-    private static DcMotor left_drive;
-    private static DcMotor right_drive;
-    private static DcMotor arm_lift;
-    private static ColorSensor color_prox;
-    private static Servo right_thumb;
-    private static Servo left_thumb;
-    private static Servo ball_arm;
 
-    private static String glyphPosition;
-
-
+  private static DcMotor left_drive;
+  private static DcMotor right_drive;
+  private static DcMotor arm_lift;
+  private static ColorSensor color_prox;
+  private static Servo right_thumb;
+  private static Servo left_thumb;
+  private static Servo ball_arm;
+  private GyroSensor mr_gyro;
+  private String glyphPosition;
+  static BNO055IMU imu;
 
 //START VUFORIA CODE
     public static final String TAG = "Vuforia VuMark Sample";
@@ -83,7 +84,21 @@ public class AutoRedPara extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+//START IMU STUFF
+        BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+        params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        params.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        params.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        params.loggingEnabled      = true;
+        params.loggingTag          = "IMU";
+        params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(params);
+//END IMU STUFF
 
 //START VUFORIA CODE
         /*
@@ -142,6 +157,7 @@ public class AutoRedPara extends LinearOpMode {
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
+        mr_gyro = hardwareMap.get(GyroSensor.class, "mr_gyro");
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -149,26 +165,17 @@ public class AutoRedPara extends LinearOpMode {
         arm_lift.setDirection(DcMotor.Direction.REVERSE);
         right_drive.setDirection(DcMotor.Direction.REVERSE);
 
-        //left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        //right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
-        //left_drive.setDirection(DcMotor.Direction.REVERSE);
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
 
-        // sets the color arm to the proper position and calls the knock off ball method
         ball_arm.setPosition(0);
+        pickUpGlyph();
         knockOffBlue();
-
-        // move to safe zone
         moveToSafe();
 
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-
 
 //START VUFORIA CODE
             /**
@@ -221,8 +228,6 @@ public class AutoRedPara extends LinearOpMode {
 //END VUFORIA CODE
 
             telemetry.addData("Status", "Running");
-            telemetry.addData("right encoder",right_drive.getCurrentPosition());
-            telemetry.addData("left encoder",left_drive.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -233,93 +238,86 @@ public class AutoRedPara extends LinearOpMode {
     }
 //END VUFORIA CODE
 
-    // brings down arm, knocks of blue ball, brings arm up
-    private void knockOffBlue(){
-        // drops arm down
-        while(ball_arm.getPosition() < 0.74){
-                ball_arm.setPosition(ball_arm.getPosition()+0.001);
-        }
-
-        // checks the color
-        if(color_prox.blue() > color_prox.red()){
-        //rotate left and knock off blue
-                int encStart = right_drive.getCurrentPosition();
-                while(right_drive.getCurrentPosition() < encStart + 700){
-                        right_drive.setPower(0.125);
-                }
-            // brings arm back up
-            ball_arm.setPosition(0);
-
-                right_drive.setPower(0);
-                while(right_drive.getCurrentPosition() > encStart - 300){
-                    right_drive.setPower(-0.125);
-                }
-                right_drive.setPower(0);
-        } else {
-        //rotate right and knock off blue
-                int encStart = left_drive.getCurrentPosition();
-                while(left_drive.getCurrentPosition() < encStart + 700){
-                        left_drive.setPower(0.125);
-                }
-            // brings arm back up
-            ball_arm.setPosition(0);
-
-                left_drive.setPower(0);
-                while(left_drive.getCurrentPosition() > encStart){
-                    left_drive.setPower(-0.125);
-                }
-                left_drive.setPower(0);
-        }
-
-        // brings arm back up
-        ball_arm.setPosition(0);
+public static void knockOffBlue(){
+    // drops arm down
+    while(ball_arm.getPosition() < 0.62){
+        ball_arm.setPosition(ball_arm.getPosition() + 0.001);
     }
 
-    // moves to safe zone for red team paralell layout
-    public static void moveToSafe(){
-        int encStartTwo = right_drive.getCurrentPosition();
-        //rotate left
-            while(right_drive.getCurrentPosition() < encStartTwo + 2000){
-                left_drive.setPower(-0.125);
+    // checks the color
+    if(color_prox.blue() > color_prox.red()){
+    //rotate left and knock off blue
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                 right_drive.setPower(0.125);
+                left_drive.setPower(-0.125);
+            }
+        // brings arm back up
+        ball_arm.setPosition(0);
+            right_drive.setPower(0);
+            left_drive.setPower(0);
 
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
+                right_drive.setPower(-0.125);
+                left_drive.setPower(0.125);
             }
             right_drive.setPower(0);
             left_drive.setPower(0);
 
+    } else {
+    //rotate right and knock off blue
+            int encStart = left_drive.getCurrentPosition();
+
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
+                    left_drive.setPower(0.125);
+                    right_drive.setPower(-0.125);
+            }
+        // brings arm back up
+        ball_arm.setPosition(0);
+            left_drive.setPower(0);
+            right_drive.setPower(0);
+
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
+                left_drive.setPower(-0.125);
+                right_drive.setPower(0.125);
+            }
+            left_drive.setPower(0);
+            right_drive.setPower(0);
+    }
+
+    // brings arm back up
+    ball_arm.setPosition(0);
+}
+
+    public static void moveToSafe(){
+        //rotate left
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
+            left_drive.setPower(-0.125);
+            right_drive.setPower(0.125);
+
+        }
+        right_drive.setPower(0);
+        left_drive.setPower(0);
+
         //move forward
-        encStartTwo = left_drive.getCurrentPosition();
+        int encStartTwo = left_drive.getCurrentPosition();
         while(left_drive.getCurrentPosition() < encStartTwo + 5000){
             left_drive.setPower(0.5);
             right_drive.setPower(0.5);
         }
         left_drive.setPower(0);
         right_drive.setPower(0);
-
-        //rotate right
-
-        //move forward
     }
 
-    public static void dropCube(){
-            //Rotate left
-
-            //Move forward a certain amount
-            if(glyphPosition.equals("LEFT")){
-
-            } else if(glyphPosition.equals("CENTER")){
-
-            } else {
-
-            }
-
-            //Rotate right
-
-
-            //Move forward
-
-
-            //Drop cube
+    private void pickUpGlyph(){
+      while(mr_gyro.getHeading() < 2){
+        arm_lift.setPower(-0.125);
+      }
+      arm_lift.setPower(0);
+      left_thumb.setPosition(0.5);
+      right_thumb.setPosition(0.5);
+      while(mr_gyro.getHeading() < 30){
+        arm_lift.setPower(-0.25);
+      }
+      arm_lift.setPower(0);
     }
-
 }
