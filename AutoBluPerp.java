@@ -173,7 +173,7 @@ public class AutoBluPerp extends LinearOpMode {
 
         ball_arm.setPosition(0);
         pickUpGlyph();
-        knockOffBlue();
+        knockOffRed();
         moveToSafe();
 
         while (opModeIsActive()) {
@@ -285,9 +285,9 @@ public class AutoBluPerp extends LinearOpMode {
     // moves to safe zone for blue team perpendicular layout
     private void moveToSafe(){
         //rotate right
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
-                left_drive.setPower(0.125);
-                right_drive.setPower(-0.125);
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 80){
+                //left_drive.setPower(0.125);
+                right_drive.setPower(0.125);
 
             }
             right_drive.setPower(0);

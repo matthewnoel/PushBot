@@ -173,7 +173,7 @@ public class AutoBluPara extends LinearOpMode {
 
         ball_arm.setPosition(0);
         pickUpGlyph();
-        knockOffBlue();
+        knockOffRed();
         moveToSafe();
 
         while (opModeIsActive()) {
@@ -285,9 +285,9 @@ public class AutoBluPara extends LinearOpMode {
     // moves to safe zone for blue team paralell layout
     private void moveToSafe(){
         //rotate left
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
-                left_drive.setPower(0.125);
-                right_drive.setPower(-0.125);
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 100){
+                //left_drive.setPower(0.25);
+                right_drive.setPower(0.125);
 
             }
             right_drive.setPower(0);

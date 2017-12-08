@@ -290,9 +290,9 @@ public static void knockOffBlue(){
 
     public static void moveToSafe(){
         //rotate left
-        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
-            left_drive.setPower(-0.125);
-            right_drive.setPower(0.125);
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 100){
+            left_drive.setPower(0.25);
+            right_drive.setPower(-0.125);
 
         }
         right_drive.setPower(0);

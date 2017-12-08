@@ -292,8 +292,8 @@ public class AutoRedPerp extends LinearOpMode {
 
     private void moveToSafe(){
       //rotate
-        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 30){
-            right_drive.setPower(-0.125);
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 80){
+            //right_drive.setPower(-0.125);
             left_drive.setPower(0.125);
         }
         right_drive.setPower(0);
