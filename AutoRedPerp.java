@@ -292,9 +292,9 @@ public class AutoRedPerp extends LinearOpMode {
 
     private void moveToSafe(){
       //rotate
-        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 80){
-            //right_drive.setPower(-0.125);
-            left_drive.setPower(0.125);
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 60){
+            right_drive.setPower(-0.125);
+            left_drive.setPower(0.25);
         }
         right_drive.setPower(0);
         left_drive.setPower(0);
@@ -310,15 +310,23 @@ public class AutoRedPerp extends LinearOpMode {
     }
 
     private void pickUpGlyph(){
-      while(mr_gyro.getHeading() < 2){
-        arm_lift.setPower(-0.125);
       left_thumb.setPosition(0.5);
       right_thumb.setPosition(0.5);
+      while(mr_gyro.getHeading() < 60){
+        arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);
+    /*
+      while(mr_gyro.getHeading() < 2){
+        arm_lift.setPower(-0.125);
+      }
+      arm_lift.setPower(0);
+      left_thumb.setPosition(0.5);
+      right_thumb.setPosition(0.5);
       while(mr_gyro.getHeading() < 30){
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);
+    */
     }
 }
