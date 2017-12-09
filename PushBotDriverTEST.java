@@ -30,6 +30,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import java.util.Locale;
+
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -44,7 +62,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 @TeleOp
 
-public class PushBotDriver extends LinearOpMode {
+public class PushBotDriverTEST extends LinearOpMode {
     private DcMotor arm_lift;
     private DcMotor right_drive;
     private DcMotor left_drive;
@@ -55,13 +73,15 @@ public class PushBotDriver extends LinearOpMode {
     private Servo ball_arm;
     private boolean bIsPressed = true;
 
+    BNO055IMU imu;
+
     @Override
     public void runOpMode() {
         arm_lift = hardwareMap.get(DcMotor.class, "arm_lift");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
         //touch_senser = hardwareMap.get(DigitalChannel.class, "touch_senser");
-        color_distance = hardwareMap.get(ColorSensor.class, "color_prox");
+        //color_distance = hardwareMap.get(ColorSensor.class, "color_distance");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
@@ -72,7 +92,21 @@ public class PushBotDriver extends LinearOpMode {
         arm_lift.setDirection(DcMotor.Direction.REVERSE);
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         left_drive.setDirection(DcMotor.Direction.REVERSE);
+//START IMU STUFF
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+//END IMU STUFF
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -96,12 +130,12 @@ public class PushBotDriver extends LinearOpMode {
                 //Thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
+                        right_thumb.setPosition(right_thumb.getPosition() + 0.005);
+                        left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
+                    right_thumb.setPosition(right_thumb.getPosition() - 0.005);
+                    left_thumb.setPosition(left_thumb.getPosition() + 0.005);
                 }
             } else {
                 //Independant thumbs
@@ -109,19 +143,19 @@ public class PushBotDriver extends LinearOpMode {
                 //Left thumb code
                 if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
+                        left_thumb.setPosition(left_thumb.getPosition() - 0.005);
                     }
                 } else if (this.gamepad1.left_bumper){
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
+                    left_thumb.setPosition(left_thumb.getPosition() + 0.005);
                 }
 
                 //Right thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
+                        right_thumb.setPosition(right_thumb.getPosition() + 0.005);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
+                    right_thumb.setPosition(right_thumb.getPosition() - 0.005);
                 }
             }
 
@@ -131,18 +165,19 @@ public class PushBotDriver extends LinearOpMode {
             right_drive.setPower(-(this.gamepad1.left_stick_y + this.gamepad1.left_stick_x));
             /*
             telemetry.addData("Status", "Running");
-            //telemetry.addData("Boom Button Pressed", !touch_senser.getState());
+            telemetry.addData("Boom Button Pressed", !touch_senser.getState());
             telemetry.addData("Red", color_distance.red());
-            //telemetry.addData("Green", color_distance.green());
-            //telemetry.addData("Blue", color_distance.blue());
+            telemetry.addData("Green", color_distance.green());
+            telemetry.addData("Blue", color_distance.blue());
             telemetry.addData("Alpha", color_distance.alpha());
             telemetry.update();
             */
+
+            telemetry.addData("heading", imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.addData("bool",bIsPressed);
             telemetry.addData("arm position", arm_lift.getCurrentPosition());
             telemetry.addData("left thumb", left_thumb.getPosition());
             telemetry.addData("right thumb", right_thumb.getPosition());
-            telemetry.addData("Blue" , color_distance.blue());
             telemetry.update();
         }
     }
