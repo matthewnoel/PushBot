@@ -312,7 +312,7 @@ public class AutoRedPerp extends LinearOpMode {
     private void pickUpGlyph(){
       left_thumb.setPosition(0.5);
       right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 60){
+      while(mr_gyro.getHeading() < 100){
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);

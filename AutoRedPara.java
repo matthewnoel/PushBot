@@ -257,8 +257,8 @@ public static void knockOffBlue(){
             left_drive.setPower(0);
 
             while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
-                right_drive.setPower(-0.125);
-                left_drive.setPower(0.125);
+                right_drive.setPower(0.125);
+                left_drive.setPower(-0.125);
             }
             right_drive.setPower(0);
             left_drive.setPower(0);
@@ -290,7 +290,7 @@ public static void knockOffBlue(){
 
     public static void moveToSafe(){
         //rotate left
-        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 100){
+        while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 90){
             left_drive.setPower(0.25);
             right_drive.setPower(-0.125);
 
@@ -311,7 +311,7 @@ public static void knockOffBlue(){
     private void pickUpGlyph(){
       left_thumb.setPosition(0.5);
       right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 60){
+      while(mr_gyro.getHeading() < 120){
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);

@@ -53,7 +53,8 @@ public class PushBotDriver extends LinearOpMode {
     private Servo right_thumb;
     private Servo left_thumb;
     private Servo ball_arm;
-    private boolean bIsPressed = true;
+    //private boolean bIsPressed = false;
+    private double thumbSpeed = 0.025;
 
     @Override
     public void runOpMode() {
@@ -83,52 +84,55 @@ public class PushBotDriver extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            /*
             if(this.gamepad2.b){
                 bIsPressed = false;
             } else {
                 bIsPressed = true;
             }
-
+            */
             //Thumb code
-            if(bIsPressed){
+            //if(bIsPressed){
                 //Dependant thumbs
 
                 //Thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
+                        right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
+                        left_thumb.setPosition(left_thumb.getPosition() - thumbSpeed);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
+                    right_thumb.setPosition(right_thumb.getPosition() - thumbSpeed);
+                    left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
                 }
+            /*
             } else {
                 //Independant thumbs
 
                 //Left thumb code
                 if(!this.gamepad1.left_bumper){
                     if(this.gamepad1.left_trigger > 0.5){
-                        left_thumb.setPosition(left_thumb.getPosition() - 0.01);
+                        left_thumb.setPosition(left_thumb.getPosition() - thumbSpeed);
                     }
                 } else if (this.gamepad1.left_bumper){
-                    left_thumb.setPosition(left_thumb.getPosition() + 0.01);
+                    left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
                 }
 
                 //Right thumb code
                 if(!this.gamepad1.right_bumper){
                     if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + 0.01);
+                        right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
                     }
                 } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - 0.01);
+                    right_thumb.setPosition(right_thumb.getPosition() - thumbSpeed);
                 }
             }
+            */
 
             //Motor test code
             arm_lift.setPower(this.gamepad1.right_stick_y / 1.5);
-            left_drive.setPower(this.gamepad1.left_stick_y - this.gamepad1.left_stick_x);
-            right_drive.setPower(-(this.gamepad1.left_stick_y + this.gamepad1.left_stick_x));
+            left_drive.setPower(this.gamepad1.left_stick_y / 1.5 - this.gamepad1.left_stick_x / 1.5);
+            right_drive.setPower(-(this.gamepad1.left_stick_y / 1.5 + this.gamepad1.left_stick_x / 1.5));
             /*
             telemetry.addData("Status", "Running");
             //telemetry.addData("Boom Button Pressed", !touch_senser.getState());
@@ -138,7 +142,7 @@ public class PushBotDriver extends LinearOpMode {
             telemetry.addData("Alpha", color_distance.alpha());
             telemetry.update();
             */
-            telemetry.addData("bool",bIsPressed);
+            //telemetry.addData("bool",bIsPressed);
             telemetry.addData("arm position", arm_lift.getCurrentPosition());
             telemetry.addData("left thumb", left_thumb.getPosition());
             telemetry.addData("right thumb", right_thumb.getPosition());

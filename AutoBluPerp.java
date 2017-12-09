@@ -258,8 +258,8 @@ public class AutoBluPerp extends LinearOpMode {
             left_drive.setPower(0);
             right_drive.setPower(0);
             while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
-                right_drive.setPower(-0.125);
-                left_drive.setPower(0.125);
+                right_drive.setPower(0.125);
+                left_drive.setPower(-0.125);
             }
             right_drive.setPower(0);
             left_drive.setPower(0);
@@ -285,7 +285,7 @@ public class AutoBluPerp extends LinearOpMode {
     // moves to safe zone for blue team perpendicular layout
     private void moveToSafe(){
         //rotate right
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 60){
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 70){
                 left_drive.setPower(-0.125);
                 right_drive.setPower(0.25);
 
@@ -305,7 +305,7 @@ public class AutoBluPerp extends LinearOpMode {
     private void pickUpGlyph(){
       left_thumb.setPosition(0.5);
       right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 60){
+      while(mr_gyro.getHeading() < 100){
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);

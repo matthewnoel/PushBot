@@ -173,8 +173,8 @@ public class AutoBluPara extends LinearOpMode {
 
         ball_arm.setPosition(0);
         pickUpGlyph();
-        //knockOffRed();
-        //moveToSafe();
+        knockOffRed();
+        moveToSafe();
 
         while (opModeIsActive()) {
 
@@ -250,8 +250,8 @@ public class AutoBluPara extends LinearOpMode {
         if(color_prox.red() > color_prox.blue()){
             //rotate left and knock off red
             while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
-                    right_drive.setPower(0.125);
-                    left_drive.setPower(-0.125);
+                    right_drive.setPower(-0.125);
+                    left_drive.setPower(0.125);
             }
             // brings arm back up
             ball_arm.setPosition(0);
@@ -294,9 +294,9 @@ public class AutoBluPara extends LinearOpMode {
             left_drive.setPower(0);
         //move forward
         int encStartTwo = left_drive.getCurrentPosition();
-        while(left_drive.getCurrentPosition() > encStartTwo - 5000){
-            left_drive.setPower(-0.5);
-            right_drive.setPower(-0.5);
+        while(left_drive.getCurrentPosition() < encStartTwo + 5000){
+            left_drive.setPower(0.5);
+            right_drive.setPower(0.5);
         }
         left_drive.setPower(0);
         right_drive.setPower(0);
