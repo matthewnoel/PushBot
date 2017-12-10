@@ -30,18 +30,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a PushBot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Remove a @Disabled the on the next line or two (if present) to add this opmode to the Driver Station OpMode list,
- * or add a @Disabled annotation to prevent this OpMode from being added to the Driver Station
- */
 @TeleOp
 
 public class PushBotDriver extends LinearOpMode {
@@ -53,15 +41,17 @@ public class PushBotDriver extends LinearOpMode {
     private Servo right_thumb;
     private Servo left_thumb;
     private Servo ball_arm;
-    //private boolean bIsPressed = false;
     private double thumbSpeed = 0.025;
+    private double speedDivisor;
+    private String precision;
 
     @Override
+
     public void runOpMode() {
+
         arm_lift = hardwareMap.get(DcMotor.class, "arm_lift");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
-        //touch_senser = hardwareMap.get(DigitalChannel.class, "touch_senser");
         color_distance = hardwareMap.get(ColorSensor.class, "color_prox");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
@@ -74,79 +64,31 @@ public class PushBotDriver extends LinearOpMode {
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         left_drive.setDirection(DcMotor.Direction.REVERSE);
 
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         ball_arm.setPosition(0);
-        // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
 
-
-        // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            /*
-            if(this.gamepad2.b){
-                bIsPressed = false;
-            } else {
-                bIsPressed = true;
+
+            speedDivisor = this.gamepad1.b?4:1.5;
+
+            if(!this.gamepad1.right_bumper){
+                if(this.gamepad1.right_trigger > 0.5){
+                    right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
+                    left_thumb.setPosition(left_thumb.getPosition() - thumbSpeed);
+                }
+            } else if (this.gamepad1.right_bumper){
+                right_thumb.setPosition(right_thumb.getPosition() - thumbSpeed);
+                left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
             }
-            */
-            //Thumb code
-            //if(bIsPressed){
-                //Dependant thumbs
 
-                //Thumb code
-                if(!this.gamepad1.right_bumper){
-                    if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
-                        left_thumb.setPosition(left_thumb.getPosition() - thumbSpeed);
-                    }
-                } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - thumbSpeed);
-                    left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
-                }
-            /*
-            } else {
-                //Independant thumbs
+            arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
+            left_drive.setPower(this.gamepad1.left_stick_y / speedDivisor - this.gamepad1.left_stick_x / speedDivisor);
+            right_drive.setPower(-(this.gamepad1.left_stick_y / speedDivisor + this.gamepad1.left_stick_x / speedDivisor));
 
-                //Left thumb code
-                if(!this.gamepad1.left_bumper){
-                    if(this.gamepad1.left_trigger > 0.5){
-                        left_thumb.setPosition(left_thumb.getPosition() - thumbSpeed);
-                    }
-                } else if (this.gamepad1.left_bumper){
-                    left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
-                }
-
-                //Right thumb code
-                if(!this.gamepad1.right_bumper){
-                    if(this.gamepad1.right_trigger > 0.5){
-                        right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
-                    }
-                } else if (this.gamepad1.right_bumper){
-                    right_thumb.setPosition(right_thumb.getPosition() - thumbSpeed);
-                }
-            }
-            */
-
-            //Motor test code
-            arm_lift.setPower(this.gamepad1.right_stick_y / 1.5);
-            left_drive.setPower(this.gamepad1.left_stick_y / 1.5 - this.gamepad1.left_stick_x / 1.5);
-            right_drive.setPower(-(this.gamepad1.left_stick_y / 1.5 + this.gamepad1.left_stick_x / 1.5));
-            /*
-            telemetry.addData("Status", "Running");
-            //telemetry.addData("Boom Button Pressed", !touch_senser.getState());
-            telemetry.addData("Red", color_distance.red());
-            //telemetry.addData("Green", color_distance.green());
-            //telemetry.addData("Blue", color_distance.blue());
-            telemetry.addData("Alpha", color_distance.alpha());
-            telemetry.update();
-            */
-            //telemetry.addData("bool",bIsPressed);
-            telemetry.addData("arm position", arm_lift.getCurrentPosition());
-            telemetry.addData("left thumb", left_thumb.getPosition());
-            telemetry.addData("right thumb", right_thumb.getPosition());
-            telemetry.addData("Blue" , color_distance.blue());
+            telemetry.addData("(B) Precision Mode: ", this.gamepad1.b?new String"ON":new String"OFF";
             telemetry.update();
         }
     }
