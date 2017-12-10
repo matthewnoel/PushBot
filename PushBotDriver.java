@@ -72,7 +72,7 @@ public class PushBotDriver extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            speedDivisor = this.gamepad1.b?4:1.5;
+            speedDivisor = this.gamepad2.b?6:1.3;
 
             if(!this.gamepad1.right_bumper){
                 if(this.gamepad1.right_trigger > 0.5){
@@ -88,7 +88,7 @@ public class PushBotDriver extends LinearOpMode {
             left_drive.setPower(this.gamepad1.left_stick_y / speedDivisor - this.gamepad1.left_stick_x / speedDivisor);
             right_drive.setPower(-(this.gamepad1.left_stick_y / speedDivisor + this.gamepad1.left_stick_x / speedDivisor));
 
-            telemetry.addData("(B) Precision Mode: ", this.gamepad1.b?new String"ON":new String"OFF";
+            telemetry.addData("(B) Precision Mode: ", this.gamepad2.b?"ON":"OFF");
             telemetry.update();
         }
     }
