@@ -43,7 +43,6 @@ public class PushBotDriver extends LinearOpMode {
     private Servo ball_arm;
     private double thumbSpeed = 0.025;
     private double speedDivisor;
-    private String precision;
 
     @Override
 
