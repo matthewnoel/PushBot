@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 package org.firstinspires.ftc.loaderbot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -41,7 +42,8 @@ public class PushBotDriver extends LinearOpMode {
     private Servo right_thumb;
     private Servo left_thumb;
     private Servo ball_arm;
-    private double thumbSpeed = 0.025;
+    private double thumbSpeed;
+    private GyroSensor mr_gyro;
     private double speedDivisor;
 
     @Override
@@ -55,6 +57,7 @@ public class PushBotDriver extends LinearOpMode {
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
+        mr_gyro = hardwareMap.get(GyroSensor.class, "mr_gyro");
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,6 +75,43 @@ public class PushBotDriver extends LinearOpMode {
         while (opModeIsActive()) {
 
             speedDivisor = this.gamepad2.b?6:1.3;
+            thumbSpeed = this.gamepad2.a?0.005:0.015;
+
+            //Go to first height
+            if(this.gamepad2.dpad_down){
+                if(mr_gyro.getHeading() < 10 - 5 || mr_gyro.getHeading() > 10 + 5){
+                    arm_lift.setPower(Math.signum(mr_gyro.getHeading() - 10) * 0.25);
+                } else {
+                    arm_lift.setPower(0);
+                }
+            }
+
+            //Go to second height
+            if(this.gamepad2.dpad_left){
+                if(mr_gyro.getHeading() < 50 - 5 || mr_gyro.getHeading() > 50 + 5){
+                    arm_lift.setPower(Math.signum(mr_gyro.getHeading() - 50) * 0.25);
+                } else {
+                    arm_lift.setPower(0);
+                }
+            }
+
+            //Go to third height
+            if(this.gamepad2.dpad_right){
+                if(mr_gyro.getHeading() < 75 - 5 || mr_gyro.getHeading() > 75 + 5){
+                    arm_lift.setPower(Math.signum(mr_gyro.getHeading() - 75) * 0.25);
+                } else {
+                    arm_lift.setPower(0);
+                }
+            }
+
+            //Go to fourth height
+            if(this.gamepad2.dpad_up){
+                if(mr_gyro.getHeading() < 95 - 5 || mr_gyro.getHeading() > 95 + 5){
+                    arm_lift.setPower(Math.signum(mr_gyro.getHeading() - 95) * 0.25);
+                } else {
+                    arm_lift.setPower(0);
+                }
+            }
 
             if(!this.gamepad1.right_bumper){
                 if(this.gamepad1.right_trigger > 0.5){
@@ -83,11 +123,18 @@ public class PushBotDriver extends LinearOpMode {
                 left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
             }
 
-            arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
+            if(!this.gamepad2.dpad_down && !this.gamepad2.dpad_up && !this.gamepad2.dpad_left && !this.gamepad2.dpad_right){
+                arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
+            }
             left_drive.setPower(this.gamepad1.left_stick_y / speedDivisor - this.gamepad1.left_stick_x / speedDivisor);
             right_drive.setPower(-(this.gamepad1.left_stick_y / speedDivisor + this.gamepad1.left_stick_x / speedDivisor));
 
-            telemetry.addData("(B) Precision Mode: ", this.gamepad2.b?"ON":"OFF");
+            telemetry.addData("(B) Motor Precision Mode: ", this.gamepad2.b?"ON":"OFF");
+            telemetry.addData("(A) Thumb Precision Mode: ", this.gamepad2.a?"ON":"OFF");
+            telemetry.addData("(⌄) FIRST Arm Height: ", this.gamepad2.dpad_down?"ON":"OFF");
+            telemetry.addData("(<) SECOND Arm Height: ", this.gamepad2.dpad_left?"ON":"OFF");
+            telemetry.addData("(>) THIRD Arm Height: ", this.gamepad2.dpad_right?"ON":"OFF");
+            telemetry.addData("(^) FOURTH Arm Height: ", this.gamepad2.dpad_up?"ON":"OFF");
             telemetry.update();
         }
     }

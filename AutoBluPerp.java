@@ -131,7 +131,7 @@ public class AutoBluPerp extends LinearOpMode {
          * Here we chose the back (HiRes) camera (for greater range), but
          * for a competition robot, the front camera might be more convenient.
          */
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         /**
@@ -284,8 +284,9 @@ public class AutoBluPerp extends LinearOpMode {
 
     // moves to safe zone for blue team perpendicular layout
     private void moveToSafe(){
+        int i = glyphPosition.equals("LEFT")?70:glyphPosition.equals("CENTER")?75:80;
         //rotate right
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 70){
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < i){
                 left_drive.setPower(-0.125);
                 right_drive.setPower(0.25);
 
@@ -294,9 +295,43 @@ public class AutoBluPerp extends LinearOpMode {
             left_drive.setPower(0);
         //move forward
         int encStartTwo = left_drive.getCurrentPosition();
-        while(left_drive.getCurrentPosition() < encStartTwo + 5000){
+        while(left_drive.getCurrentPosition() < encStartTwo + 3000){
             left_drive.setPower(0.5);
             right_drive.setPower(0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
+        dropCube();
+    }
+
+    private void dropCube(){
+        int encStartThree = left_drive.getCurrentPosition();
+        //release glyph
+        left_thumb.setPosition(0);
+        right_thumb.setPosition(1);
+        //move back
+        while(left_drive.getCurrentPosition() > encStartThree - 1000){
+            left_drive.setPower(-0.5);
+            right_drive.setPower(-0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
+        //brings arm back up
+        while(mr_gyro.getHeading() < 100){
+          arm_lift.setPower(-0.25);
+        }
+        arm_lift.setPower(0);
+        //move forward again
+        while(left_drive.getCurrentPosition() < encStartThree + 3000){
+            left_drive.setPower(0.5);
+            right_drive.setPower(0.5);
+        }
+        left_drive.setPower(0);
+        right_drive.setPower(0);
+        //move back
+        while(left_drive.getCurrentPosition() > encStartThree){
+            left_drive.setPower(-0.5);
+            right_drive.setPower(-0.5);
         }
         left_drive.setPower(0);
         right_drive.setPower(0);
@@ -305,21 +340,9 @@ public class AutoBluPerp extends LinearOpMode {
     private void pickUpGlyph(){
       left_thumb.setPosition(0.5);
       right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 100){
+      while(mr_gyro.getHeading() < 40){
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);
-    /*
-      while(mr_gyro.getHeading() < 2){
-        arm_lift.setPower(-0.125);
-      }
-      arm_lift.setPower(0);
-      left_thumb.setPosition(0.5);
-      right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 30){
-        arm_lift.setPower(-0.25);
-      }
-      arm_lift.setPower(0);
-    */
     }
 }
