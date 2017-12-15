@@ -315,32 +315,14 @@ public class AutoRedPerp extends LinearOpMode {
         //release glyph
         left_thumb.setPosition(0);
         right_thumb.setPosition(1);
-        //move back
-        while(left_drive.getCurrentPosition() > encStartThree - 1000){
-            left_drive.setPower(-0.5);
-            right_drive.setPower(-0.5);
-        }
-        left_drive.setPower(0);
-        right_drive.setPower(0);
+        moveBack(1000);
         //brings arm back up
         while(mr_gyro.getHeading() < 100){
           arm_lift.setPower(-0.25);
         }
         arm_lift.setPower(0);
-        //move forward again
-        while(left_drive.getCurrentPosition() < encStartThree + 3000){
-            left_drive.setPower(0.5);
-            right_drive.setPower(0.5);
-        }
-        left_drive.setPower(0);
-        right_drive.setPower(0);
-        //move back
-        while(left_drive.getCurrentPosition() > encStartThree){
-            left_drive.setPower(-0.5);
-            right_drive.setPower(-0.5);
-        }
-        left_drive.setPower(0);
-        right_drive.setPower(0);
+        moveForward(3000);
+        moveBack(1000);
     }
 
     private void pickUpGlyph(){
@@ -350,17 +332,25 @@ public class AutoRedPerp extends LinearOpMode {
         arm_lift.setPower(-0.25);
       }
       arm_lift.setPower(0);
-    /*
-      while(mr_gyro.getHeading() < 2){
-        arm_lift.setPower(-0.125);
+    }
+
+    private void moveForward(int distance){
+      int encoderStart = left_drive.getCurrentPosition();
+      while(left_drive.getCurrentPosition() < encoderStart + distance){
+          left_drive.setPower(0.5);
+          right_drive.setPower(0.5);
       }
-      arm_lift.setPower(0);
-      left_thumb.setPosition(0.5);
-      right_thumb.setPosition(0.5);
-      while(mr_gyro.getHeading() < 30){
-        arm_lift.setPower(-0.25);
+      left_drive.setPower(0);
+      right_drive.setPower(0);
+    }
+
+    private void moveBack(int distance){
+      int encoderStart = left_drive.getCurrentPosition();
+      while(left_drive.getCurrentPosition() > encoderStart - distance){
+          left_drive.setPower(-0.5);
+          right_drive.setPower(-0.5);
       }
-      arm_lift.setPower(0);
-    */
+      left_drive.setPower(0);
+      right_drive.setPower(0);
     }
 }

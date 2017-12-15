@@ -74,6 +74,7 @@ public class PushBotDriver extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            //sets speed values using ternary operator to enable the precision modes
             speedDivisor = this.gamepad2.b?6:1.3;
             thumbSpeed = this.gamepad2.a?0.005:0.015;
 
@@ -113,6 +114,7 @@ public class PushBotDriver extends LinearOpMode {
                 }
             }
 
+            //opens and closes thumbs with buttons
             if(!this.gamepad1.right_bumper){
                 if(this.gamepad1.right_trigger > 0.5){
                     right_thumb.setPosition(right_thumb.getPosition() + thumbSpeed);
@@ -123,18 +125,21 @@ public class PushBotDriver extends LinearOpMode {
                 left_thumb.setPosition(left_thumb.getPosition() + thumbSpeed);
             }
 
+            //sets arm power if the second driver is not using one of the automatic heights
             if(!this.gamepad2.dpad_down && !this.gamepad2.dpad_up && !this.gamepad2.dpad_left && !this.gamepad2.dpad_right){
                 arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
             }
+
+            //movement based on left stick
             left_drive.setPower(this.gamepad1.left_stick_y / speedDivisor - this.gamepad1.left_stick_x / speedDivisor);
             right_drive.setPower(-(this.gamepad1.left_stick_y / speedDivisor + this.gamepad1.left_stick_x / speedDivisor));
 
             telemetry.addData("(B) Motor Precision Mode: ", this.gamepad2.b?"ON":"OFF");
             telemetry.addData("(A) Thumb Precision Mode: ", this.gamepad2.a?"ON":"OFF");
-            telemetry.addData("(⌄) FIRST Arm Height: ", this.gamepad2.dpad_down?"ON":"OFF");
-            telemetry.addData("(<) SECOND Arm Height: ", this.gamepad2.dpad_left?"ON":"OFF");
-            telemetry.addData("(>) THIRD Arm Height: ", this.gamepad2.dpad_right?"ON":"OFF");
             telemetry.addData("(^) FOURTH Arm Height: ", this.gamepad2.dpad_up?"ON":"OFF");
+            telemetry.addData("(>) THIRD Arm Height: ", this.gamepad2.dpad_right?"ON":"OFF");
+            telemetry.addData("(<) SECOND Arm Height: ", this.gamepad2.dpad_left?"ON":"OFF");
+            telemetry.addData("(⌄) FIRST Arm Height: ", this.gamepad2.dpad_down?"ON":"OFF");
             telemetry.update();
         }
     }
