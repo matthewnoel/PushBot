@@ -20,6 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 package org.firstinspires.ftc.loaderbot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -284,12 +285,10 @@ public class AutoBluPerp extends LinearOpMode {
 
     // moves to safe zone for blue team perpendicular layout
     private void moveToSafe(){
-        int i = glyphPosition.equals("LEFT")?70:glyphPosition.equals("CENTER")?75:80;
         //rotate right
-            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < i){
+            while(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 70){
                 left_drive.setPower(-0.125);
                 right_drive.setPower(0.25);
-
             }
             right_drive.setPower(0);
             left_drive.setPower(0);
@@ -310,9 +309,9 @@ public class AutoBluPerp extends LinearOpMode {
         left_thumb.setPosition(0);
         right_thumb.setPosition(1);
         moveBack(1000);
-        //brings arm back up
-        while(mr_gyro.getHeading() < 100){
-          arm_lift.setPower(-0.25);
+        //brings arm back down
+        while(mr_gyro.getHeading() > 1){
+          arm_lift.setPower(0.25);
         }
         arm_lift.setPower(0);
         moveForward(3000);
