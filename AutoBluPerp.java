@@ -108,10 +108,10 @@ public class AutoBluPerp extends LinearOpMode {
          * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
          */
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        //VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         /*
          * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -173,9 +173,13 @@ public class AutoBluPerp extends LinearOpMode {
         waitForStart();
 
         ball_arm.setPosition(0);
+        opModeIsActive();
         pickUpGlyph();
+        opModeIsActive();
         knockOffRed();
+        opModeIsActive();
         moveToSafe();
+        opModeIsActive();
 
         while (opModeIsActive()) {
 
@@ -294,7 +298,7 @@ public class AutoBluPerp extends LinearOpMode {
             left_drive.setPower(0);
         //move forward
         int encStartTwo = left_drive.getCurrentPosition();
-        while(left_drive.getCurrentPosition() < encStartTwo + 3000){
+        while(left_drive.getCurrentPosition() < encStartTwo + 4000){
             left_drive.setPower(0.5);
             right_drive.setPower(0.5);
         }
@@ -308,14 +312,14 @@ public class AutoBluPerp extends LinearOpMode {
         //release glyph
         left_thumb.setPosition(0);
         right_thumb.setPosition(1);
-        moveBack(1000);
+        moveBack(500);
         //brings arm back down
         while(mr_gyro.getHeading() > 1){
           arm_lift.setPower(0.25);
         }
         arm_lift.setPower(0);
-        moveForward(3000);
-        moveBack(1000);
+        //moveForward(3000);
+        //moveBack(1000);
     }
 
     private void pickUpGlyph(){
