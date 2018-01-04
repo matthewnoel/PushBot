@@ -55,7 +55,15 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
         @Override
         public State update() {
-            return this;
+            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 90){
+                    left_drive.setPower(0.125);
+                    right_drive.setPower(-0.125);
+                    return this;
+            } else {
+                    left_drive.setPower(0);
+                    right_drive.setPower(0);
+                    return null;
+            }
         }
     }
 
@@ -80,7 +88,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
                     // Reached distance, switch to rotate state.
                     left_drive.setPower(0);
                     right_drive.setPower(0);
-                    return null;
+                    return rotateUntilAngle;
                 }
 
         }
