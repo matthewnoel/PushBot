@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.loaderbot;
-
-import com.github.pmtischler.base.StateMachine;
-import com.github.pmtischler.base.StateMachine.State;
+package org.firstinspires.ftc.teamcode;
+import org.firstinspires.ftc.teamcode.StateMachine;
+import org.firstinspires.ftc.teamcode.StateMachine.State;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -44,7 +43,7 @@ import java.util.Locale;
 
 @Autonomous
 
-public class StMchAutoBluPerp {
+public class StMchAutoBluPerp extends LinearOpMode{
 
     /**
      * Rotates until angle is met.
@@ -56,6 +55,7 @@ public class StMchAutoBluPerp {
 
         @Override
         public State update() {
+            return this;
         }
     }
 
@@ -65,15 +65,16 @@ public class StMchAutoBluPerp {
     public class ForwardUntilDistance implements StateMachine.State {
         @Override
         public void start() {
-                int encoderStart = left_drive.getCurrentPosition();
+                encoderStart = left_drive.getCurrentPosition();
         }
 
         @Override
         public State update() {
+
                 if (left_drive.getCurrentPosition() < encoderStart + 3000) {
                     // Haven't yet reached distance, drive forward.
-                    left_drive.setPower(0.5);
-                    right_drive.setPower(0.5);
+                    left_drive.setPower(0.125);
+                    right_drive.setPower(0.125);
                     return this;
                 } else {
                     // Reached distance, switch to rotate state.
@@ -81,20 +82,20 @@ public class StMchAutoBluPerp {
                     right_drive.setPower(0);
                     return null;
                 }
+
         }
+        private int encoderStart;
     }
 
     /**
      * Initializes the state machine.
      */
-     public void init() {
-         super.init();  // Initialize mecanum drive.
+     @Override
+     public void runOpMode(){
+         //super.init();  // Initialize mecanum drive.
 
          // Create the states.
-         forwardUntilDistance = new ForwardUntilDistance();
-         rotateUntilAngle = new RotateUntilAngle();
-         // Start the state machine with forward state.
-         machine = new StateMachine(forwardUntilDistance);
+
 
  //START IMU STUFF
          BNO055IMU.Parameters params = new BNO055IMU.Parameters();
@@ -126,14 +127,21 @@ public class StMchAutoBluPerp {
          arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
          arm_lift.setDirection(DcMotor.Direction.REVERSE);
          right_drive.setDirection(DcMotor.Direction.REVERSE);
-     }
+
+        forwardUntilDistance = new ForwardUntilDistance();
+         rotateUntilAngle = new RotateUntilAngle();
+         // Start the state machine with forward state.
+         machine = new StateMachine(forwardUntilDistance);
+         waitForStart();
+         while(opModeIsActive()){
+             machine.update();
+         }
+}
 
     /**
      * Runs the state machine.
      */
-     public void loop() {
-         machine.update();  // Run one update in state machine.
-     }
+
 
     // Hardware stuff.
     private static DcMotor left_drive;
