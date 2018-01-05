@@ -43,7 +43,7 @@ import java.util.Locale;
 
 @Autonomous
 
-public class StMchAutoBluPerp extends LinearOpMode{
+public class StMchAutoBluPara extends LinearOpMode{
   /**
    * Picks up glyph.
    */

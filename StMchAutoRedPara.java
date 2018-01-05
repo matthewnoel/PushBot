@@ -43,7 +43,7 @@ import java.util.Locale;
 
 @Autonomous
 
-public class StMchAutoBluPerp extends LinearOpMode{
+public class StMchAutoRedPara extends LinearOpMode{
   /**
    * Picks up glyph.
    */
@@ -75,15 +75,15 @@ public class StMchAutoBluPerp extends LinearOpMode{
           if(){
                   return this;
           } else {
-                  return KnockRedBallOff;
+                  return KnockBlueBallOff;
           }
       }
   }
 
   /**
-   * Knocks red ball off.
+   * Knocks blue ball off.
    */
-  public class KnockRedBallOff implements StateMachine.State {
+  public class KnockBlueBallOff implements StateMachine.State {
       @Override
       public void start() {
       }
@@ -283,8 +283,8 @@ public class StMchAutoBluPerp extends LinearOpMode{
     private PickUpGlyph pickUpGlyph;
     // Bring color sensor arm down
     private LowerColorSensor lowerColorSensor;
-    // Knocks red ball off
-    private KnockRedBallOff knockRedBallOff;
+    // Knocks blue ball off
+    private KnockBlueBallOff knockBlueBallOff;
     // Rotates unitl certain angle
     private RotateUntilAngle rotateUntilAngle;
     // Drives forward putting glyph in slot
