@@ -50,14 +50,18 @@ public class StMchAutoBluPerp extends LinearOpMode{
   public class PickUpGlyph implements StateMachine.State {
       @Override
       public void start() {
+              left_thumb.setPosition(0.5);
+              right_thumb.setPosition(0.5);
       }
 
       @Override
       public State update() {
-          if(){
+          if(mr_gyro.getHeading() < 40){
+                  arm_lift.setPower(-0.25);
                   return this;
           } else {
-                  return LowerColorSensor;
+                  arm_lift.setPower(0);
+                  return lowerColorSensor;
           }
       }
   }
@@ -68,14 +72,16 @@ public class StMchAutoBluPerp extends LinearOpMode{
   public class LowerColorSensor implements StateMachine.State {
       @Override
       public void start() {
+              ball_arm.setPosition(0);
       }
 
       @Override
       public State update() {
-          if(){
+          if(ball_arm.getPosition() < 0.62){
+                  ball_arm.setPosition(ball_arm.getPosition()+0.001);
                   return this;
           } else {
-                  return KnockRedBallOff;
+                  return knockRedBallOff;
           }
       }
   }
@@ -86,16 +92,40 @@ public class StMchAutoBluPerp extends LinearOpMode{
   public class KnockRedBallOff implements StateMachine.State {
       @Override
       public void start() {
+              if(color_prox.red() > color_prox.blue()){
+                      isLeft = true;
+              } else {
+                      isLeft = false;
+              }
       }
 
       @Override
       public State update() {
-          if(){
-                  return this;
-          } else {
-                  return RotateUntilAngle;
-          }
+              if(isLeft){
+                      // Rotate left and knock off red ball.
+                      if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
+                              left_drive.setPower(-0.125);
+                              right_drive.setPower(0.125);
+                              return this;
+                      } else {
+                              left_drive.setPower(0);
+                              right_drive.setPower(0);
+                              return rotateUntilAngle;
+                      }
+              } else {
+                      // Rotate right and knock off red ball.
+                      if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
+                              left_drive.setPower(0.125);
+                              right_drive.setPower(-0.125);
+                              return this;
+                      } else {
+                              left_drive.setPower(0);
+                              right_drive.setPower(0);
+                              return rotateUntilAngle;
+                      }
+              }
       }
+      private boolean isLeft;
   }
 
     /**
@@ -108,14 +138,14 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
         @Override
         public State update() {
-            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 90){
-                    left_drive.setPower(0.125);
-                    right_drive.setPower(-0.125);
+            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 70){
+                    left_drive.setPower(-0.125);
+                    right_drive.setPower(0.25);
                     return this;
             } else {
                     left_drive.setPower(0);
                     right_drive.setPower(0);
-                    return DriveGlyphToSlot;
+                    return driveGlyphToSlot;
             }
         }
     }
@@ -131,16 +161,14 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
         @Override
         public State update() {
-          if (left_drive.getCurrentPosition() < encoderStart + 3000) {
-              // Haven't yet reached distance, drive forward.
-              left_drive.setPower(0.125);
-              right_drive.setPower(0.125);
+          if (left_drive.getCurrentPosition() < encoderStart + 4000) {
+              left_drive.setPower(0.25);
+              right_drive.setPower(0.25);
               return this;
           } else {
-              // Reached distance, switch to rotate state.
               left_drive.setPower(0);
               right_drive.setPower(0);
-              return rotateUntilAngle;
+              return dropGlyph;
           }
         }
         private int encoderStart;
@@ -152,15 +180,15 @@ public class StMchAutoBluPerp extends LinearOpMode{
     public class DropGlyph implements StateMachine.State {
         @Override
         public void start() {
+                left_thumb.setPosition(0);
+                right_thumb.setPosition(0);
         }
 
         @Override
         public State update() {
-            if(){
-                    return this;
-            } else {
-                    return BackUpForArm;
-            }
+
+            return backUpForArm;
+
         }
     }
 
@@ -170,14 +198,40 @@ public class StMchAutoBluPerp extends LinearOpMode{
     public class BackUpForArm implements StateMachine.State {
         @Override
         public void start() {
+                encoderStart = left_drive.getCurrentPosition();
         }
 
         @Override
         public State update() {
-            if(){
+            if(left_drive.getCurrentPosition() > encoderStart - 1000){
+                    left_drive.setPower(-0.25);
+                    right_drive.setPower(-0.25);
                     return this;
             } else {
-                    return ShoveGlyphIn;
+                    left_drive.setPower(0);
+                    right_drive.setPower(0);
+                    return dropArm;
+            }
+        }
+        private int encoderStart;
+    }
+
+    /**
+     * Drops arm.
+     */
+    public class DropArm implements StateMachine.State {
+        @Override
+        public void start() {
+        }
+
+        @Override
+        public State update() {
+            if(mr_gyro.getHeading() > 1){
+                    arm_lift.setPower(0.25);
+                    return this;
+            } else {
+                    arm_lift.setPower(0);
+                    return shoveGlyphIn;
             }
         }
     }
@@ -188,16 +242,22 @@ public class StMchAutoBluPerp extends LinearOpMode{
     public class ShoveGlyphIn implements StateMachine.State {
         @Override
         public void start() {
+                encoderStart = left_drive.getCurrentPosition();
         }
 
         @Override
         public State update() {
-            if(){
+                if (left_drive.getCurrentPosition() < encoderStart + 4000) {
+                    left_drive.setPower(0.25);
+                    right_drive.setPower(0.25);
                     return this;
-            } else {
-                    return FinalBackUp;
-            }
+                } else {
+                    left_drive.setPower(0);
+                    right_drive.setPower(0);
+                    return finalBackUp;
+                }
         }
+        private int encoderStart;
     }
 
     /**
@@ -206,16 +266,22 @@ public class StMchAutoBluPerp extends LinearOpMode{
     public class FinalBackUp implements StateMachine.State {
         @Override
         public void start() {
+                encoderStart = left_drive.getCurrentPosition();
         }
 
         @Override
         public State update() {
-            if(){
-                    return this;
-            } else {
-                    return null;
-            }
+                if(left_drive.getCurrentPosition() > encoderStart - 500){
+                        left_drive.setPower(-0.25);
+                        right_drive.setPower(-0.25);
+                        return this;
+                } else {
+                        left_drive.setPower(0);
+                        right_drive.setPower(0);
+                        return null;
+                }
         }
+        private int encoderStart;
     }
 
      @Override
@@ -293,9 +359,10 @@ public class StMchAutoBluPerp extends LinearOpMode{
     private DropGlyph dropGlyph;
     // Backs up for arm
     private BackUpForArm backUpForArm;
+    // Drops arm.
+    private DropArm dropArm;
     // Shoves glyph in
     private ShoveGlyphIn shoveGlyphIn;
     // Final back up
     private FinalBackUp finalBackUp;
-
 }
