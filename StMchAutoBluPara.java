@@ -365,8 +365,19 @@ public class StMchAutoBluPara extends LinearOpMode{
          arm_lift.setDirection(DcMotor.Direction.REVERSE);
          right_drive.setDirection(DcMotor.Direction.REVERSE);
 
-         forwardUntilDistance = new ForwardUntilDistance();
+         pickUpGlyph = new PickUpGlyph();
+         lowerColorSensor = new LowerColorSensor();
+         knockRedBallOff = new KnockRedBallOff();
+         rotateOnStone = new RotateOnStone();
+         driveOffStone = new DriveOffStone();
          rotateUntilAngle = new RotateUntilAngle();
+         driveGlyphToSlot = new DriveGlyphToSlot();
+         dropGlyph = new DropGlyph();
+         backUpForArm =new BackUpForArm();
+         dropArm = new DropArm();
+         shoveGlyphIn = new ShoveGlyphIn();
+         finalBackUp = new FinalBackUp();
+         
          // Start the state machine with forward state.
          machine = new StateMachine(pickUpGlyph);
 
