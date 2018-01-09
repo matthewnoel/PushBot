@@ -50,12 +50,13 @@ public class StMchAutoBluPerp extends LinearOpMode{
   public class PickUpGlyph implements StateMachine.State {
       @Override
       public void start() {
-              left_thumb.setPosition(0.5);
-              right_thumb.setPosition(0.5);
+
       }
 
       @Override
       public State update() {
+          left_thumb.setPosition(0.5);
+          right_thumb.setPosition(0.5);
           if(mr_gyro.getHeading() < 40){
                   arm_lift.setPower(-0.25);
                   return this;
@@ -110,6 +111,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
                       } else {
                               left_drive.setPower(0);
                               right_drive.setPower(0);
+                              ball_arm.setPosition(0);
                               return rotateUntilAngle;
                       }
               } else {
@@ -121,6 +123,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
                       } else {
                               left_drive.setPower(0);
                               right_drive.setPower(0);
+                              ball_arm.setPosition(0);
                               return rotateUntilAngle;
                       }
               }
@@ -138,7 +141,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
         @Override
         public State update() {
-            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 70){
+            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 68){
                     left_drive.setPower(-0.125);
                     right_drive.setPower(0.25);
                     return this;
@@ -181,7 +184,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
         @Override
         public void start() {
                 left_thumb.setPosition(0);
-                right_thumb.setPosition(0);
+                right_thumb.setPosition(1);
         }
 
         @Override
@@ -226,7 +229,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
         @Override
         public State update() {
-            if(mr_gyro.getHeading() > 1){
+            if(mr_gyro.getHeading() > 10){
                     arm_lift.setPower(0.25);
                     return this;
             } else {

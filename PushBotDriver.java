@@ -46,6 +46,9 @@ public class PushBotDriver extends LinearOpMode {
     private GyroSensor mr_gyro;
     private double speedDivisor;
 
+    private Servo wrist_servo;
+    private GyroSensor wrist_gyro;
+
     @Override
 
     public void runOpMode() {
@@ -58,6 +61,10 @@ public class PushBotDriver extends LinearOpMode {
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
         mr_gyro = hardwareMap.get(GyroSensor.class, "mr_gyro");
+
+        wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
+        wrist_gyro = hardwareMap.get(GyroSensor.class, "wrist_gyro");
+
 
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -127,12 +134,23 @@ public class PushBotDriver extends LinearOpMode {
 
             //sets arm power if the second driver is not using one of the automatic heights
             if(!this.gamepad2.dpad_down && !this.gamepad2.dpad_up && !this.gamepad2.dpad_left && !this.gamepad2.dpad_right){
-                arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
+                    if(mr_gyro < 10 && this.gamepad1.right_stick_y < 0){
+                            arm_lift.setPower(0);
+                    } else {
+                        arm_lift.setPower(this.gamepad1.right_stick_y / speedDivisor);
+                    }
             }
 
             //movement based on left stick
             left_drive.setPower(this.gamepad1.left_stick_y / speedDivisor - this.gamepad1.left_stick_x / speedDivisor);
             right_drive.setPower(-(this.gamepad1.left_stick_y / speedDivisor + this.gamepad1.left_stick_x / speedDivisor));
+
+            // Uses wrist servo to keep hand level.
+            if(wrist_gyro.getHeading < 34){
+                    wrist_servo.setPosition(wrist_servo.getPosition() + 0.002);
+            } else if(wrist_gyro.getHeading > 36){
+                    wrist_servo.setPosition(wrist_servo.getPosition() - 0.002);
+            }
 
             telemetry.addData("(B) Motor Precision Mode: ", this.gamepad2.b?"ON":"OFF");
             telemetry.addData("(A) Thumb Precision Mode: ", this.gamepad2.a?"ON":"OFF");

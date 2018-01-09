@@ -50,12 +50,13 @@ public class StMchAutoRedPara extends LinearOpMode{
         public class PickUpGlyph implements StateMachine.State {
             @Override
             public void start() {
-                    left_thumb.setPosition(0.5);
-                    right_thumb.setPosition(0.5);
+
             }
 
             @Override
             public State update() {
+                left_thumb.setPosition(0.5);
+                right_thumb.setPosition(0.5);
                 if(mr_gyro.getHeading() < 40){
                         arm_lift.setPower(-0.25);
                         return this;
@@ -110,6 +111,7 @@ public class StMchAutoRedPara extends LinearOpMode{
                             } else {
                                     left_drive.setPower(0);
                                     right_drive.setPower(0);
+                                    ball_arm.setPosition(0);
                                     return rotateOnStone;
                             }
                     } else {
@@ -121,6 +123,7 @@ public class StMchAutoRedPara extends LinearOpMode{
                             } else {
                                     left_drive.setPower(0);
                                     right_drive.setPower(0);
+                                    ball_arm.setPosition(0);
                                     return rotateOnStone;
                             }
                     }
@@ -138,9 +141,9 @@ public class StMchAutoRedPara extends LinearOpMode{
 
           @Override
           public State update() {
-              if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 60){
-                      left_drive.setPower(0.125);
-                      right_drive.setPower(-0.25);
+              if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 40){
+                      left_drive.setPower(0.25);
+                      right_drive.setPower(-0.125);
                       return this;
               } else {
                       left_drive.setPower(0);
@@ -161,7 +164,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
           @Override
           public State update() {
-            if (left_drive.getCurrentPosition() < encoderStart + 4000) {
+            if (left_drive.getCurrentPosition() < encoderStart + 6000) {
                 left_drive.setPower(0.25);
                 right_drive.setPower(0.25);
                 return this;
@@ -184,7 +187,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
       @Override
       public State update() {
-          if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 120){
+          if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 165){
                   left_drive.setPower(0.25);
                   right_drive.setPower(-0.125);
                   return this;
@@ -207,7 +210,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
          @Override
          public State update() {
-           if (left_drive.getCurrentPosition() < encoderStart + 5000) {
+           if (left_drive.getCurrentPosition() < encoderStart + 1000) {
                left_drive.setPower(0.25);
                right_drive.setPower(0.25);
                return this;
@@ -227,7 +230,7 @@ public class StMchAutoRedPara extends LinearOpMode{
           @Override
           public void start() {
                   left_thumb.setPosition(0);
-                  right_thumb.setPosition(0);
+                  right_thumb.setPosition(1);
           }
 
           @Override
@@ -269,10 +272,10 @@ public class StMchAutoRedPara extends LinearOpMode{
            @Override
            public void start() {
            }
-
+// fix thumb
            @Override
            public State update() {
-               if(mr_gyro.getHeading() > 1){
+               if(mr_gyro.getHeading() > 10){
                        arm_lift.setPower(0.25);
                        return this;
                } else {

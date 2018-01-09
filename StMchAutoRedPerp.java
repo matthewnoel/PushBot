@@ -50,12 +50,13 @@ public class StMchAutoRedPerp extends LinearOpMode{
         public class PickUpGlyph implements StateMachine.State {
             @Override
             public void start() {
-                    left_thumb.setPosition(0.5);
-                    right_thumb.setPosition(0.5);
+
             }
 
             @Override
             public State update() {
+                left_thumb.setPosition(0.5);
+                right_thumb.setPosition(0.5);
                 if(mr_gyro.getHeading() < 40){
                         arm_lift.setPower(-0.25);
                         return this;
@@ -110,6 +111,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
                       } else {
                               left_drive.setPower(0);
                               right_drive.setPower(0);
+                              ball_arm.setPosition(0);
                               return rotateUntilAngle;
                       }
               } else {
@@ -121,6 +123,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
                       } else {
                               left_drive.setPower(0);
                               right_drive.setPower(0);
+                              ball_arm.setPosition(0);
                               return rotateUntilAngle;
                       }
               }
@@ -181,7 +184,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
          @Override
          public void start() {
                  left_thumb.setPosition(0);
-                 right_thumb.setPosition(0);
+                 right_thumb.setPosition(1);
          }
 
          @Override
@@ -226,7 +229,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
 
          @Override
          public State update() {
-             if(mr_gyro.getHeading() > 1){
+             if(mr_gyro.getHeading() > 10){
                      arm_lift.setPower(0.25);
                      return this;
              } else {
@@ -337,6 +340,8 @@ public class StMchAutoRedPerp extends LinearOpMode{
 
          while(opModeIsActive()){
              machine.update();
+             //telemetry.addData("Gyro",mr_gyro.getHeading());
+             //telemetry.update();
          }
 
        }
@@ -374,5 +379,4 @@ public class StMchAutoRedPerp extends LinearOpMode{
     private ShoveGlyphIn shoveGlyphIn;
     // Final back up
     private FinalBackUp finalBackUp;
-
 }
