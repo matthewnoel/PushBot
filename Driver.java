@@ -35,7 +35,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp
 
-public class StMchTighterTurns extends LinearOpMode {
+public class Driver extends LinearOpMode {
 
         /**
          * Calibrates gyro.
