@@ -37,8 +37,17 @@ public class WristTest extends LinearOpMode {
     private Servo wrist_servo;
     private GyroSensor wrist_gyro;
 
-    @Override
 
+
+ public void moveToLevel()
+ {  if(wrist_gyro.getHeading() < 78){
+                   wrist_servo.setPosition(wrist_servo.getPosition() - 0.01);
+            } else if(wrist_gyro.getHeading() > 81){
+                   wrist_servo.setPosition(wrist_servo.getPosition() + 0.01);
+            }
+
+ }
+    @Override
     public void runOpMode() {
 
         wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
@@ -48,15 +57,30 @@ public class WristTest extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        //wrist_gyro.calibrate();
+        boolean calibrate = false;
 
         while (opModeIsActive()) {
 
-            // Uses wrist servo to keep hand level.
-            if(wrist_gyro.getHeading < 34){
-                    wrist_servo.setPosition(wrist_servo.getPosition() + 0.001);
-            } else if(wrist_gyro.getHeading > 36){
-                    wrist_servo.setPosition(wrist_servo.getPosition() - 0.001);
+            if(!calibrate){
+
+            wrist_gyro.calibrate();
+
+                while(wrist_gyro.isCalibrating()){
+                telemetry.addData("Calibrating", "true");
+                telemetry.update();
+                sleep(500);
+                }
             }
+
+            calibrate = true;
+
+            wrist_servo.setPosition(180);
+
+            //this.moveToLevel();
+
+            //wrist_servo.setPosition(0.5);
+            //wrist_servo.setPosition(wrist_servo.getPosition() + 0.01);
 
             telemetry.addData("Gyro heading", wrist_gyro.getHeading());
             telemetry.addData("Servo position", wrist_servo.getPosition());

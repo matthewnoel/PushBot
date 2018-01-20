@@ -17,8 +17,9 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package org.firstinspires.ftc.loaderbot;
-
+package org.firstinspires.ftc.teamcode;
+import org.firstinspires.ftc.teamcode.StateMachine;
+import org.firstinspires.ftc.teamcode.StateMachine.State;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -34,6 +35,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp
 
 public class PushBotDriver extends LinearOpMode {
+
+        /**
+         * Instance fields.
+         */
     private DcMotor arm_lift;
     private DcMotor right_drive;
     private DcMotor left_drive;
@@ -45,14 +50,19 @@ public class PushBotDriver extends LinearOpMode {
     private double thumbSpeed;
     private GyroSensor mr_gyro;
     private double speedDivisor;
-
     private Servo wrist_servo;
     private GyroSensor wrist_gyro;
 
     @Override
 
+    /**
+     * Runs when INIT is pressed on driver station.
+     */
     public void runOpMode() {
 
+            /**
+             * Tells the code what the varibales are equivalent to in the config file.
+             */
         arm_lift = hardwareMap.get(DcMotor.class, "arm_lift");
         right_drive = hardwareMap.get(DcMotor.class, "right_drive");
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
@@ -65,7 +75,9 @@ public class PushBotDriver extends LinearOpMode {
         wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
         wrist_gyro = hardwareMap.get(GyroSensor.class, "wrist_gyro");
 
-
+        /**
+         * Tells the motors to brake when they stop moving and reverses their direction for easier math.
+         */
         left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm_lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -73,10 +85,14 @@ public class PushBotDriver extends LinearOpMode {
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         left_drive.setDirection(DcMotor.Direction.REVERSE);
 
+        /**
+         * Displays "Status: Initialized" on the driver station.
+         * Sets the arm that knocks off the ball to its starting position.
+         * Waits for driver coach to press the play button.
+         */
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         ball_arm.setPosition(0);
-
         waitForStart();
 
         while (opModeIsActive()) {
