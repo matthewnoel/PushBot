@@ -137,6 +137,7 @@ public class StMchDriver extends LinearOpMode {
                             wrist_servo.setPosition(wrist_servo.getPosition() - 0.002);
                     }
 
+                    /*
                     telemetry.addData("(B) Motor Precision Mode: ", gamepad2.b?"ON":"OFF");
                     telemetry.addData("(A) Thumb Precision Mode: ", gamepad2.a?"ON":"OFF");
                     telemetry.addData("(^) FOURTH Arm Height: ", gamepad2.dpad_up?"ON":"OFF");
@@ -144,6 +145,7 @@ public class StMchDriver extends LinearOpMode {
                     telemetry.addData("(<) SECOND Arm Height: ", gamepad2.dpad_left?"ON":"OFF");
                     telemetry.addData("(⌄) FIRST Arm Height: ", gamepad2.dpad_down?"ON":"OFF");
                     telemetry.update();
+                    */
 
                     return this;
             }

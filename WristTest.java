@@ -34,20 +34,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp
 
 public class WristTest extends LinearOpMode {
+
     private Servo wrist_servo;
     private GyroSensor wrist_gyro;
 
-
-
- public void moveToLevel()
- {  if(wrist_gyro.getHeading() < 78){
-                   wrist_servo.setPosition(wrist_servo.getPosition() - 0.01);
-            } else if(wrist_gyro.getHeading() > 81){
-                   wrist_servo.setPosition(wrist_servo.getPosition() + 0.01);
-            }
-
- }
     @Override
+
     public void runOpMode() {
 
         wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
@@ -57,30 +49,22 @@ public class WristTest extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        //wrist_gyro.calibrate();
-        boolean calibrate = false;
+//wrist_gyro.calibrate();
+        while (opModeIsActive() && !wrist_gyro.isCalibrating()) {
 
-        while (opModeIsActive()) {
+            //this is just a test to see if there is a delay
+            //it should just go down if started in the upright position
+            //wrist_servo.setPosition(wrist_servo.getPosition() - 0.001);
+            wrist_servo.setPosition(0.5);
 
-            if(!calibrate){
-
-            wrist_gyro.calibrate();
-
-                while(wrist_gyro.isCalibrating()){
-                telemetry.addData("Calibrating", "true");
-                telemetry.update();
-                sleep(500);
-                }
+            //this is the actual level code v1
+            /*
+            if(wrist_gyro.getHeading() < 71 || wrist_gyro.getHeading() > 350){
+                wrist_servo.setPosition(wrist_servo.getPosition() - 0.001);
+            } else if(wrist_gyro.getHeading() > 69){
+                wrist_servo.setPosition(wrist_servo.getPosition() + 0.001);
             }
-
-            calibrate = true;
-
-            wrist_servo.setPosition(180);
-
-            //this.moveToLevel();
-
-            //wrist_servo.setPosition(0.5);
-            //wrist_servo.setPosition(wrist_servo.getPosition() + 0.01);
+            */
 
             telemetry.addData("Gyro heading", wrist_gyro.getHeading());
             telemetry.addData("Servo position", wrist_servo.getPosition());
