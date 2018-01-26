@@ -292,8 +292,8 @@ public class StMchAutoBluPara extends LinearOpMode{
           @Override
           public State update() {
               if (body_gyro.getHeading() < 60) {
-                      front_left.setPower(-0.125);
-                      back_left.setPower(-0.125);
+                      front_left.setPower(-0.25);
+                      back_left.setPower(-0.25);
                       front_right.setPower(0.25);
                       back_right.setPower(0.25);
                       return this;
@@ -356,8 +356,8 @@ public class StMchAutoBluPara extends LinearOpMode{
       @Override
       public State update() {
           if ((body_gyro.getHeading() < 60)){
-                  back_left.setPower(-0.125);
-                  front_left.setPower(-0.125);
+                  back_left.setPower(-0.25);
+                  front_left.setPower(-0.25);
                   back_right.setPower(0.25);
                   front_right.setPower(0.25);
                   return this;
@@ -384,8 +384,8 @@ public class StMchAutoBluPara extends LinearOpMode{
       @Override
       public State update() {
           if ((body_gyro.getHeading() < 60)){
-                  back_left.setPower(-0.125);
-                  front_left.setPower(-0.125);
+                  back_left.setPower(-0.25);
+                  front_left.setPower(-0.25);
                   back_right.setPower(0.25);
                   front_right.setPower(0.25);
                   return this;
@@ -412,8 +412,8 @@ public class StMchAutoBluPara extends LinearOpMode{
       @Override
       public State update() {
           if ((body_gyro.getHeading() < 60)){
-                  back_left.setPower(-0.125);
-                  front_left.setPower(-0.125);
+                  back_left.setPower(-0.25);
+                  front_left.setPower(-0.25);
                   back_right.setPower(0.25);
                   front_right.setPower(0.25);
                   return this;
