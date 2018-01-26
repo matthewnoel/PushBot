@@ -43,14 +43,13 @@ public class Driver extends LinearOpMode {
         public class CalibrateGyro implements StateMachine.State {
             @Override
             public void start() {
-                wrist_gyro.calibrate();
                 arm_gyro.calibrate();
                 body_gyro.calibrate();
             }
 
             @Override
             public State update() {
-                if(wrist_gyro.isCalibrating() || arm_gyro.isCalibrating() || body_gyro.isCalibrating()){
+                if(arm_gyro.isCalibrating() || body_gyro.isCalibrating()){
                         return this;
                 } else {
                         return drive;
@@ -65,9 +64,8 @@ public class Driver extends LinearOpMode {
             @Override
             public void start() {
                 ball_arm.setPosition(0);
-                left_thumb.setPosition(0.5);
-                right_thumb.setPosition(0.5);
-                wrist_servo.setPosition(1);
+                left_thumb.setPosition(0);
+                right_thumb.setPosition(1);
             }
 
             @Override
@@ -141,13 +139,6 @@ public class Driver extends LinearOpMode {
                     back_right.setPower(-(gamepad1.left_stick_y / speedDivisor + gamepad1.left_stick_x / speedDivisor));
                     front_right.setPower(-(gamepad1.left_stick_y / speedDivisor + gamepad1.left_stick_x / speedDivisor));
 
-                    //levels out the wrist.
-                    if(wrist_gyro.getHeading() < 68){
-                        wrist_servo.setPosition(wrist_servo.getPosition() - 0.01);
-                    }else if(wrist_gyro.getHeading() > 71){
-                        wrist_servo.setPosition(wrist_servo.getPosition() + 0.01);
-                    }
-
                     telemetry.addData("(B) Motor Precision Mode: ", gamepad2.b?"ON":"OFF");
                     telemetry.addData("(A) Thumb Precision Mode: ", gamepad2.a?"ON":"OFF");
                     telemetry.addData("(^) FOURTH Arm Height: ", gamepad2.dpad_up?"ON":"OFF");
@@ -172,10 +163,8 @@ public class Driver extends LinearOpMode {
         color_prox = hardwareMap.get(ColorSensor.class, "color_prox");
         right_thumb = hardwareMap.get(Servo.class, "right_thumb");
         left_thumb = hardwareMap.get(Servo.class, "left_thumb");
-        wrist_servo = hardwareMap.get(Servo.class, "wrist_servo");
         ball_arm = hardwareMap.get(Servo.class, "ball_arm");
         arm_gyro = hardwareMap.get(GyroSensor.class, "arm_gyro");
-        wrist_gyro = hardwareMap.get(GyroSensor.class, "wrist_gyro");
         body_gyro = hardwareMap.get(GyroSensor.class, "body_gyro");
 
         calibrateGyro = new CalibrateGyro();
@@ -207,12 +196,10 @@ public class Driver extends LinearOpMode {
     private DcMotor back_left;
     private DcMotor back_right;
     private ColorSensor color_prox;
-    private Servo wrist_servo;
     private Servo right_thumb;
     private Servo left_thumb;
     private Servo ball_arm;
     private GyroSensor arm_gyro;
-    private GyroSensor wrist_gyro;
     private GyroSensor body_gyro;
     private double thumbSpeed;
     private double speedDivisor;
