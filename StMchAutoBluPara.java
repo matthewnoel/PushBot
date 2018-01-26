@@ -166,7 +166,7 @@ public class StMchAutoBluPara extends LinearOpMode{
 
             @Override
             public State update() {
-                if(ball_arm.getPosition() < 0.47){
+                if(ball_arm.getPosition() < 0.5){
                         ball_arm.setPosition(ball_arm.getPosition()+0.001);
                         return this;
                 } else {
