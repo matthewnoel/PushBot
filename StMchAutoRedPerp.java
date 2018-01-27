@@ -303,7 +303,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (body_gyro.getHeading() > 279 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);
@@ -331,7 +331,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (body_gyro.getHeading() > 274 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);
@@ -359,7 +359,7 @@ public class StMchAutoRedPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (body_gyro.getHeading() > 269 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);

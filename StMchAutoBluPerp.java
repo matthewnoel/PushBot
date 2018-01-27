@@ -59,7 +59,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
                 if(arm_gyro.isCalibrating() || body_gyro.isCalibrating()){
                         return this;
                 } else {
-                        return scanKey;
+                        return pickUpGlyph;
                 }
             }
         }
@@ -193,7 +193,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
             public State update() {
                     if(isLeft){
                             // Rotate left and knock off red ball.
-                            if(body_gyro.getHeading() < 20){
+                            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
                                     front_left.setPower(-0.125);
                                     back_left.setPower(-0.125);
                                     front_right.setPower(0.125);
@@ -206,11 +206,17 @@ public class StMchAutoBluPerp extends LinearOpMode{
                                     front_right.setPower(0);
                                     back_right.setPower(0);
                                     ball_arm.setPosition(0);
-                                    return rotateBack;
+                                    if(glyphPosition.equals("LEFT")){
+                                            return rotateToLeft;
+                                    } else if (glyphPosition.equals("RIGHT")){
+                                            return rotateToRight;
+                                    } else {
+                                            return rotateToCenter;
+                                    }
                             }
                     } else {
                             // Rotate right and knock off red ball.
-                            if ((body_gyro.getHeading() > 340) || body_gyro.getHeading() == 0) {
+                            if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20) {
                                     front_left.setPower(0.125);
                                     back_left.setPower(0.125);
                                     front_right.setPower(-0.125);
@@ -224,7 +230,13 @@ public class StMchAutoBluPerp extends LinearOpMode{
                                     front_right.setPower(0);
                                     back_right.setPower(0);
                                     ball_arm.setPosition(0);
-                                    return rotateBack;
+                                    if(glyphPosition.equals("LEFT")){
+                                            return rotateToLeft;
+                                    } else if (glyphPosition.equals("RIGHT")){
+                                            return rotateToRight;
+                                    } else {
+                                            return rotateToCenter;
+                                    }
                             }
                     }
             }
@@ -264,7 +276,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
                                     }
                             }
                     } else {
-                            if ((body_gyro.getHeading() > 340) || body_gyro.getHeading() == 0) {
+                            if ((body_gyro.getHeading() > 340) || body_gyro.getHeading() < 10) {
                                     front_left.setPower(0.125);
                                     back_left.setPower(0.125);
                                     front_right.setPower(-0.125);
@@ -301,7 +313,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 100){
                   back_left.setPower(-0.25);
                   front_left.setPower(-0.25);
                   back_right.setPower(0.25);
@@ -329,7 +341,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 90){
                   back_left.setPower(-0.25);
                   front_left.setPower(-0.25);
                   back_right.setPower(0.25);
@@ -357,7 +369,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
       @Override
       public State update() {
-          if (body_gyro.getHeading() > 300 || body_gyro.getHeading() == 1){
+          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 75){
                   back_left.setPower(-0.25);
                   front_left.setPower(-0.25);
                   back_right.setPower(0.25);
@@ -385,7 +397,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
          @Override
          public State update() {
-           if (back_left.getCurrentPosition() < encoderStart + 1000) {
+           if (back_left.getCurrentPosition() < encoderStart + 50) {
                back_left.setPower(0.25);
                front_left.setPower(0.25);
                back_right.setPower(0.25);
@@ -528,6 +540,22 @@ public class StMchAutoBluPerp extends LinearOpMode{
 
      public void runOpMode(){
 
+ //START IMU STUFF
+         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
+         params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+         params.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+         params.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+         params.loggingEnabled      = true;
+         params.loggingTag          = "IMU";
+         params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+         // and named "imu".
+         imu = hardwareMap.get(BNO055IMU.class, "imu");
+         imu.initialize(params);
+ //END IMU STUFF
+
  //START VUFORIA CODE
          /*
           * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -613,6 +641,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
          dropArm = new DropArm();
          shoveGlyphIn = new ShoveGlyphIn();
          finalBackUp = new FinalBackUp();
+         glyphPosition = "RIGHT";
 
          // Start the state machine with forward state.
          machine = new StateMachine(calibrateGyro);
@@ -639,6 +668,7 @@ public class StMchAutoBluPerp extends LinearOpMode{
     private GyroSensor body_gyro;
     private String glyphPosition;
     private boolean isLeft;
+    static BNO055IMU imu;
 
     private VuforiaTrackable relicTemplate;
 
