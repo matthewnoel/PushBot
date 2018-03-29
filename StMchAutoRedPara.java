@@ -70,7 +70,7 @@ public class StMchAutoRedPara extends LinearOpMode{
         public class ScanKey implements StateMachine.State {
             @Override
             public void start() {
-                body_gyro.resetZAxisIntegrator();
+
             }
 
             @Override
@@ -138,8 +138,7 @@ public class StMchAutoRedPara extends LinearOpMode{
         public class PickUpGlyph implements StateMachine.State {
             @Override
             public void start() {
-                telemetry.addData("glyph", glyphPosition);
-                telemetry.update();
+
             }
 
             @Override
@@ -162,12 +161,12 @@ public class StMchAutoRedPara extends LinearOpMode{
         public class LowerColorSensor implements StateMachine.State {
             @Override
             public void start() {
-                    ball_arm.setPosition(0.3);
+                    ball_arm.setPosition(0);
             }
 
             @Override
             public State update() {
-                if(ball_arm.getPosition() < 0.86){
+                if(ball_arm.getPosition() < 0.5){
                         ball_arm.setPosition(ball_arm.getPosition()+0.001);
                         return this;
                 } else {
@@ -177,7 +176,7 @@ public class StMchAutoRedPara extends LinearOpMode{
         }
 
         /**
-         * Knocks red ball off.
+         * Knocks blue ball off.
          */
         public class KnockBlueBallOff implements StateMachine.State {
             @Override
@@ -193,8 +192,8 @@ public class StMchAutoRedPara extends LinearOpMode{
             @Override
             public State update() {
                     if(isLeft){
-                            // Rotate left and knock off red ball.
-                            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) <  20){
+                            // Rotate left and knock off blue ball.
+                            if(body_gyro.getHeading() < 20){
                                     front_left.setPower(-0.125);
                                     back_left.setPower(-0.125);
                                     front_right.setPower(0.125);
@@ -207,73 +206,11 @@ public class StMchAutoRedPara extends LinearOpMode{
                                     front_right.setPower(0);
                                     back_right.setPower(0);
                                     ball_arm.setPosition(0);
-                if(glyphPosition.equals("LEFT")){
-                        return rotateToLeft;
-                } else if (glyphPosition.equals("RIGHT")){
-                        return rotateToRight;
-                } else {
-                        return rotateToCenter;
-                }
+                                    return rotateBack;
                             }
                     } else {
-                            // Rotate right and knock off red ball.
-                            //body_gyro.resetZAxisIntegrator();
-                            if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20) {
-                                    front_left.setPower(0.125);
-                                    back_left.setPower(0.125);
-                                    front_right.setPower(-0.125);
-                                    back_right.setPower(-0.125);
-                                    return this;
-                            } else {
-                                    front_left.setPower(0);
-                                    back_left.setPower(0);
-                                    front_right.setPower(0);
-                                    back_right.setPower(0);
-                                    ball_arm.setPosition(0);
-                if(glyphPosition.equals("LEFT")){
-                        return rotateToLeft;
-                } else if (glyphPosition.equals("RIGHT")){
-                        return rotateToRight;
-                } else {
-                        return rotateToCenter;
-                }
-                            }
-                    }
-            }
-        }
-
-/**
-   * Resets back to original rotation.
-   */
-  public class RotateBack implements StateMachine.State {
-          @Override
-          public void start() {
-                  body_gyro.resetZAxisIntegrator();
-                  telemetry.addData("Gyro", body_gyro.getHeading());
-          }
-
-          @Override
-          public State update() {
-            if(!isLeft){
-                            // Rotate left and knock off red ball.
-                            if(Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20){
-                                    front_left.setPower(-0.125);
-                                    back_left.setPower(-0.125);
-                                    front_right.setPower(0.125);
-                                    back_right.setPower(0.125);
-                                    return this;
-                            } else {
-
-                                    front_left.setPower(0);
-                                    back_left.setPower(0);
-                                    front_right.setPower(0);
-                                    back_right.setPower(0);
-                                    ball_arm.setPosition(0);
-                                    return rotateOnStone;
-                            }
-                    } else {
-                            // Rotate right and knock off red ball.
-                            if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 20) {
+                            // Rotate right and knock off blue ball.
+                            if ((body_gyro.getHeading() > 340) || body_gyro.getHeading() == 0) {
                                     front_left.setPower(0.125);
                                     back_left.setPower(0.125);
                                     front_right.setPower(-0.125);
@@ -287,16 +224,16 @@ public class StMchAutoRedPara extends LinearOpMode{
                                     front_right.setPower(0);
                                     back_right.setPower(0);
                                     ball_arm.setPosition(0);
-                                    return rotateOnStone;
+                                    return rotateBack;
                             }
                     }
-          }
-  }
+            }
+        }
 
-  /**
-   * Rotates robot on balancing stone.
+/**
+   * Resets back to original rotation.
    */
-  public class RotateOnStone implements StateMachine.State {
+  public class RotateBack implements StateMachine.State {
           @Override
           public void start() {
                   body_gyro.resetZAxisIntegrator();
@@ -304,57 +241,55 @@ public class StMchAutoRedPara extends LinearOpMode{
 
           @Override
           public State update() {
-              if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) <  60) {
-                      front_left.setPower(-0.125);
-                      back_left.setPower(-0.125);
-                      front_right.setPower(0.25);
-                      back_right.setPower(0.25);
-                      return this;
-              } else {
+            if(!isLeft){
+                            // Rotate left and knock off red ball.
+                            if(body_gyro.getHeading() < 20){
+                                    front_left.setPower(-0.125);
+                                    back_left.setPower(-0.125);
+                                    front_right.setPower(0.125);
+                                    back_right.setPower(0.125);
+                                    return this;
+                            } else {
 
-                      front_left.setPower(0);
-                      back_left.setPower(0);
-                      front_right.setPower(0);
-                      back_right.setPower(0);
-                      return driveOffStone;
-              }
+                                    front_left.setPower(0);
+                                    back_left.setPower(0);
+                                    front_right.setPower(0);
+                                    back_right.setPower(0);
+                                    ball_arm.setPosition(0);
+                                    if(glyphPosition.equals("LEFT")){
+                                            return rotateToLeft;
+                                    } else if (glyphPosition.equals("RIGHT")){
+                                            return rotateToRight;
+                                    } else {
+                                            return rotateToCenter;
+                                    }
+                            }
+                    } else {
+                            // Rotate right and knock off red ball.
+                            if ((body_gyro.getHeading() > 340) || body_gyro.getHeading() == 0) {
+                                    front_left.setPower(0.125);
+                                    back_left.setPower(0.125);
+                                    front_right.setPower(-0.125);
+                                    back_right.setPower(-0.125);
+                                    telemetry.addData("gyro", body_gyro.getHeading());
+                                    telemetry.update();
+                                    return this;
+                            } else {
+                                    front_left.setPower(0);
+                                    back_left.setPower(0);
+                                    front_right.setPower(0);
+                                    back_right.setPower(0);
+                                    ball_arm.setPosition(0);
+                                    if(glyphPosition.equals("LEFT")){
+                                            return rotateToLeft;
+                                    } else if (glyphPosition.equals("RIGHT")){
+                                            return rotateToRight;
+                                    } else {
+                                            return rotateToCenter;
+                                    }
+                            }
+                    }
           }
-  }
-
-  /**
-   * Drive off balancing stone.
-   */
-  public class DriveOffStone implements StateMachine.State {
-          @Override
-          public void start() {
-            encoderStart = back_left.getCurrentPosition();
-          }
-
-          @Override
-          public State update() {
-                  telemetry.addData("Position",glyphPosition);
-                  telemetry.update();
-            if (back_left.getCurrentPosition() < encoderStart + 2000) {
-                back_left.setPower(0.25);
-                front_left.setPower(0.25);
-                back_right.setPower(0.25);
-                front_right.setPower(0.25);
-                return this;
-            } else {
-                    back_left.setPower(0);
-                    front_left.setPower(0);
-                    back_right.setPower(0);
-                    front_right.setPower(0);
-                if(glyphPosition.equals("LEFT")){
-                        return rotateToLeft;
-                } else if (glyphPosition.equals("RIGHT")){
-                        return rotateToRight;
-                } else {
-                        return rotateToCenter;
-                }
-            }
-          }
-          private int encoderStart;
   }
 
   /**
@@ -368,7 +303,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
       @Override
       public State update() {
-          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 41){
+          if (body_gyro.getHeading() > 279 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);
@@ -396,7 +331,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
       @Override
       public State update() {
-          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 52){
+          if (body_gyro.getHeading() > 274 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);
@@ -424,7 +359,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
       @Override
       public State update() {
-          if (Math.abs(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle) < 63){
+          if (body_gyro.getHeading() > 269 || body_gyro.getHeading() == 1){
                   back_left.setPower(0.25);
                   front_left.setPower(0.25);
                   back_right.setPower(-0.25);
@@ -452,7 +387,7 @@ public class StMchAutoRedPara extends LinearOpMode{
 
          @Override
          public State update() {
-           if (back_left.getCurrentPosition() < encoderStart + 6000) {
+           if (back_left.getCurrentPosition() < encoderStart + 1000) {
                back_left.setPower(0.25);
                front_left.setPower(0.25);
                back_right.setPower(0.25);
@@ -595,22 +530,6 @@ public class StMchAutoRedPara extends LinearOpMode{
 
      public void runOpMode(){
 
-  //START IMU STUFF
-         BNO055IMU.Parameters params = new BNO055IMU.Parameters();
-         params.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-         params.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-         params.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-         params.loggingEnabled      = true;
-         params.loggingTag          = "IMU";
-         params.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-         // and named "imu".
-         imu = hardwareMap.get(BNO055IMU.class, "imu");
-         imu.initialize(params);
- //END IMU STUFF
-
  //START VUFORIA CODE
          /*
           * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -687,8 +606,6 @@ public class StMchAutoRedPara extends LinearOpMode{
          lowerColorSensor = new LowerColorSensor();
          knockBlueBallOff = new KnockBlueBallOff();
          rotateBack = new RotateBack();
-         rotateOnStone = new RotateOnStone();
-         driveOffStone = new DriveOffStone();
          rotateToLeft = new RotateToLeft();
          rotateToCenter = new RotateToCenter();
          rotateToRight = new RotateToRight();
@@ -724,7 +641,6 @@ public class StMchAutoRedPara extends LinearOpMode{
     private GyroSensor body_gyro;
     private String glyphPosition;
     private boolean isLeft;
-    static BNO055IMU imu;
 
     private VuforiaTrackable relicTemplate;
 
@@ -743,10 +659,6 @@ public class StMchAutoRedPara extends LinearOpMode{
     private KnockBlueBallOff knockBlueBallOff;
     // Resets rotation after knocking off ball.
     private RotateBack rotateBack;
-    // Rotates robot on stone.
-    private RotateOnStone rotateOnStone;
-    // Drives off stone.
-    private DriveOffStone driveOffStone;
     // Rotates until left column.
     private RotateToLeft rotateToLeft;
     // Rotates until center column.
